@@ -1,59 +1,97 @@
+<!-- Loader and Products Container -->
 <div id="loader" class="loader"></div>
 <div id="products-container" class="product-grid"></div>
 
+<!-- Add All to Cart Button -->
+<button id="addAllToCart" style="margin: 20px; display: none;">Add All to Cart</button>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const productHandles = urlParams.get('product_handles').split(',');
-    const showHero = urlParams.get('show_hero') === 'true';
-    const hideOOS = urlParams.get('hide_oos') === 'true';
     const rowLength = parseInt(urlParams.get('row_length'), 10) || 3;
 
     const productsContainer = document.getElementById('products-container');
     const loader = document.getElementById('loader');
-    productsContainer.style.flexBasis = `calc(100% / ${rowLength} - 20px)`; // Adjust grid based on row length
+    const addAllToCartButton = document.getElementById('addAllToCart');
 
-    let productsLoaded = 0; // Counter to track loaded products
+    let allVariantIds = []; // To store all first variant ids for the add all to cart functionality
 
     productHandles.forEach((handle, index) => {
         fetch(`/products/${handle}.js`)
             .then(response => response.json())
             .then(product => {
-                if (!product.available && hideOOS) {
-                    return; // Skip out of stock products if hideOOS is true
+                if (!product.available) {
+                    return; // Optionally skip out of stock products
                 }
 
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
+
+                let variantsDropdown = `<select>`;
+                product.variants.forEach(variant => {
+                    variantsDropdown += `<option value="${variant.id}">${variant.title}</option>`;
+                });
+                variantsDropdown += `</select>`;
+
                 productCard.innerHTML = `
                     <a href="/products/${product.handle}">
                         <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
-                        <h2>${product.title}</h2>
-                        <p>${product.variants[0].price}</p>
                     </a>
+                    <h2>${product.title}</h2>
+                    <p>${product.variants[0].price}</p>
+                    ${variantsDropdown}
+                    <button onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
                 `;
-                if (index === 0 && showHero) {
-                    productCard.classList.add('hero-product');
-                }
 
                 productsContainer.appendChild(productCard);
-                productsLoaded++;
+                allVariantIds.push(product.variants[0].id); // Assume adding the first variant by default
 
-                if (productsLoaded === productHandles.length) {
-                    loader.style.display = 'none'; // Hide loader when all products are loaded
+                if (index === productHandles.length - 1) {
+                    loader.style.display = 'none';
+                    addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
                 }
             })
             .catch(error => {
                 console.error('Error loading product:', handle, error);
-                productsLoaded++;
-                if (productsLoaded === productHandles.length) {
-                    loader.style.display = 'none'; // Hide loader on error too
-                }
             });
     });
+
+    addAllToCartButton.addEventListener('click', function() {
+        allVariantIds.forEach(id => {
+            fetch('/cart/add.js', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    items: allVariantIds.map(id => ({ id: id, quantity: 1 }))
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('All items added', data))
+            .catch(error => console.error('Error adding items to cart:', error));
+        });
+    });
 });
+
+function addToCart(variantId) {
+    fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: variantId,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => alert('Added to cart!'))
+    .catch(error => console.error('Error adding item to cart:', error));
+}
 </script>
+
 
 <style>
   .loader {
