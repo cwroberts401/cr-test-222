@@ -45,7 +45,7 @@
   {% if hide_oos == "true" %}
     <p>HIDE OOS</p>
   {% endif %}
-    <ul id="product-grid" class="grid product-grid grid--{{ row_length }}-col-tablet-down grid--{{ row_length }}-col-desktop">
+    <ul id="product-grid" class="grid product-grid grid--3-col-tablet-down grid--3-col-desktop">
     {% for prod in product_handles %}
         {% assign prodObj = all_products[prod] %}
       <li class="grid__item">
