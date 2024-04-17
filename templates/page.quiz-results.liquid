@@ -28,7 +28,7 @@ Full URL:  {{ pageUrlWithHost }}
 
     {% for prod in prods %}
         <p>{{ prod }}</p> <br>
-        {% assign prodObj = all_products[prod[forloop.index0]] %}
+        {% assign prodObj = all_products[prods[forloop.index0]] %}
         {% render 'card-product', card_product: prodObj %}
     {% endfor %}
   {% endif %}
