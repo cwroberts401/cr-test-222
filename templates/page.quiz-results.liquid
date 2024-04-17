@@ -11,6 +11,10 @@
     <header>
         <h1>Quiz Results</h1>
     </header>
+      {% assign product_handles = request.params['product_handles'] | split: ',' %}
+    {% assign show_hero = request.params['show_hero'] %}
+    {% assign hide_oos = request.params['hide_oos'] %}
+    {% assign row_length = request.params['row_length'] | default: 3 %}
 
     {% comment %} Debugging Output {% endcomment %}
     <div>Product Handles: {{ request.params['product_handles'] }}</div>
@@ -18,10 +22,7 @@
     <div>Hide Out of Stock: {{ request.params['hide_oos'] }}</div>
     <div>Row Length: {{ request.params['row_length'] }}</div>
 
-    {% assign product_handles = request.params['product_handles'] | split: ',' %}
-    {% assign show_hero = request.params['show_hero'] %}
-    {% assign hide_oos = request.params['hide_oos'] %}
-    {% assign row_length = request.params['row_length'] | default: 3 %}
+
 
     <section class="products-grid">
         {% for handle in product_handles %}
