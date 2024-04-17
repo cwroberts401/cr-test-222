@@ -1,4 +1,5 @@
 <div id="loader" class="loader"></div>
+<div id="products-container" class="product-grid"></div>
 
 
 <script>
@@ -10,7 +11,7 @@
     const rowLength = parseInt(urlParams.get('row_length'), 10) || 3;
 
     const productsContainer = document.getElementById('products-container');
-    const loader = document.getElementById('loader'); // Get the loader element
+    const loader = document.getElementById('loader');
     productsContainer.style.flexBasis = `calc(100% / ${rowLength} - 20px)`; // Adjust grid based on row length
 
     let productsLoaded = 0; // Counter to track loaded products
@@ -52,7 +53,6 @@
             });
     });
 });
-
 </script>
 
 <style>
@@ -60,12 +60,27 @@
     position: fixed;
     left: 50%;
     top: 50%;
+    transform: translate(-50%, -50%);
     width: 50px;
     height: 50px;
     background-color: #f3f3f3;
     border-radius: 50%;
     border-top: 5px solid blue;
     animation: spin 1s linear infinite;
+}
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+.product-card {
+    margin: 10px;
+    flex-grow: 1;
+    flex-basis: calc(100% / 3 - 20px); /* Default to 3 products per row */
+}
+.hero-product {
+    font-size: 24px;
+    color: red;
 }
 
 @keyframes spin {
