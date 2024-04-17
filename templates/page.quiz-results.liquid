@@ -49,11 +49,11 @@
     <ul id="product-grid" class="grid product-grid grid--{{ row_length }}-col-tablet-down grid--{{ row_length }}-col-desktop">
     {% for prod in product_handles %}
         {% assign prodObj = all_products[prod] %}
-      {% if hide_oos == "true" and prodObj.available == true %}
+      {% if hide_oos == "true" and prodObj.available %}
       <li class="grid__item">
         {% render 'card-product', card_product: prodObj %}
       </li>
-      {% else %}
+      {% elsif hide_oos == "false" %}
       <li class="grid__item">
         {% render 'card-product', card_product: prodObj %}
       </li>
