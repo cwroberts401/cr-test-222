@@ -11,9 +11,22 @@
 {%- assign pageUrl= contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last | split:'?' | last |
    url_decode | split:"\u0026"
 -%}
-{% comment  %} we can assume keys and values are at same index so we crete 2 arrays {% endcomment %}
-{%- assign queryKeys= pageUrl | split:"=" | first -%}
-{{ queryKeys }}
+{% comment %} we can assume keys and values are at same index so we crete 2 arrays {% endcomment %}
+{% assign keys_array = "" %}
+{% assign values_array = "" %}
+
+{% comment %}Loop through each item, split by '=', and add to respective arrays{% endcomment %}
+{% for item in pageUrl %}
+  {% assign key_value_pair = item | split: "=" %}
+  {% assign keys_array = keys_array | append: key_value_pair[0] | append: "," %}
+  {% assign values_array = values_array | append: key_value_pair[1] | append: "," %}
+{% endfor %}
+<p>{{ keys_array }}</p>
+<p>{{ values_array }}</p>
+
+{% comment %}Remove the last comma to clean up the arrays{% endcomment %}
+{% assign keys_array = keys_array | split: "," %}
+{% assign values_array = values_array | split: "," %}
 
 Page URL without request host: {{ pageUrl }}
 {% for queryString in pageUrl %}
