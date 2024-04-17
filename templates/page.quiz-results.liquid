@@ -37,8 +37,8 @@ Full URL:  {{ pageUrlWithHost }}
                 grid--3-col-desktop
               "
             >
-        
-        {% render 'card-product', card_product: {{ all_products['product_1'] }} %}
+        {% assign prodObj = all_products['product_1'] %}
+        {% render 'card-product', card_product: prodObj %}
           <p>{{ all_products['product_1'].price }}</p>
       </ul>    
     {% endfor %}
