@@ -21,12 +21,14 @@
   {% assign keys_array = keys_array | append: key_value_pair[0] | append: "," %}
   {% assign values_array = values_array | append: key_value_pair[1] | append: "," %}
 {% endfor %}
-<p>{{ keys_array }}</p>
-<p>{{ values_array }}</p>
+
 
 {% comment %}Remove the last comma to clean up the arrays{% endcomment %}
 {% assign keys_array = keys_array | split: "," %}
 {% assign values_array = values_array | split: "," %}
+
+<p>{{ keys_array }}</p>
+<p>{{ values_array }}</p>
 
 Page URL without request host: {{ pageUrl }}
 {% for queryString in pageUrl %}
