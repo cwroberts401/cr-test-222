@@ -52,7 +52,7 @@
         {% assign prodObj = all_products[prod] %}
       {% if hide_oos == "true" and prodObj.available %}
       <li class="grid__item">
-        {% render 'card-product', card_product: prodObj %}
+        {% render 'card-product', card_product: prodObj, show_quick_add: true %}
       </li>
       {% elsif hide_oos == "false" %}
       <li class="grid__item">
