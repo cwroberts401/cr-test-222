@@ -39,7 +39,7 @@ Full URL:  {{ pageUrlWithHost }}
             >
         
         {% render 'card-product', card_product: {{ all_products['product_1'] }} %}
-          <p>{{ all_products['product_1'] }}</p>
+          <p>{{ all_products['product_1'].title }}</p>
       </ul>    
     {% endfor %}
   {% endif %}
