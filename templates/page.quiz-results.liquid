@@ -15,8 +15,10 @@
     {% assign show_hero = request.params['show_hero'] %}
     {% assign hide_oos = request.params['hide_oos'] %}
     {% assign row_length = request.params['row_length'] | default: 3 %}
+    {% assign url = new URLSearchParams(window.location.search)%}
 
     {% comment %} Debugging Output {% endcomment %}
+    <div>{url}</div>
     <div>Product Handles: {{ request.params['product_handles'] }}</div>
     <div>Show Hero: {{ request.params['show_hero'] }}</div>
     <div>Hide Out of Stock: {{ request.params['hide_oos'] }}</div>
