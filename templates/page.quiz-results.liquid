@@ -27,9 +27,7 @@ Full URL:  {{ pageUrlWithHost }}
   {% elsif paramKey == "show_hero" and paramVal.first == "true" %}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
-    <p>{{ paramVal }}</p>
     {% assign prods = paramVal.first | split: "," %}
-    <p>{{ prods }}</p>
     <ul
               id="product-grid"
               class="
@@ -38,7 +36,6 @@ Full URL:  {{ pageUrlWithHost }}
               "
             >
     {% for prod in prods %}
-        <p>{{ prods }}</p> <br>
         {% assign prodObj = all_products[prods[forloop.index0]] %}
       <li class="grid__item">
         {% render 'card-product', card_product: prodObj %}
