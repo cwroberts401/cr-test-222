@@ -30,16 +30,8 @@ Full URL:  {{ pageUrlWithHost }}
     {% assign prods = paramVal | split:"," %}
     {% for prod in prods %}
         <p>{{ prod }}</p> <br>
-        <ul
-              id="product-grid"
-              class="
-                grid product-grid grid--2-col-tablet-down
-                grid--3-col-desktop
-              "
-            >
         {% assign prodObj = all_products['product_1'] %}
         {% render 'card-product', card_product: prodObj %}
-      </ul>    
     {% endfor %}
   {% endif %}
 {% endfor %}
