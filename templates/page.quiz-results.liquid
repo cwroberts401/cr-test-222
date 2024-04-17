@@ -12,23 +12,29 @@
    url_decode | split:"\u0026"
 -%}
 {% comment %} we can assume keys and values are at same index so we crete 2 arrays {% endcomment %}
-{% assign keys_array = "" %}
-{% assign values_array = "" %}
+{% assign row_length = "" %}
+{% assign display_oos = "" %}
+{% assign show_hero = "" %}
+{% assign product_handles = "" %}
 
 {% comment %}Loop through each item, split by '=', and add to respective arrays{% endcomment %}
 {% for item in pageUrl %}
   {% assign key_value_pair = item | split: "=" %}
-  {% assign keys_array = keys_array | append: key_value_pair[0] | append: "," %}
-  {% assign values_array = values_array | append: key_value_pair[1] | append: "," %}
+  {% if key_value_pair[0] == "row_length" %}
+    {% assign row_length = key_value_pair[1] %}
+  {% elsif key_value_pair[0] == "display_oos" %}
+    {% assign display_oos = key_value_pair[1] %}
+  {% elsif key_value_pair[0] == "show_hero" %}
+    {% assign show_hero = key_value_pair[1] %}
+  {% elsif key_value_pair[0] == "product_handles" %}
+    {% assign product_handles = key_value_pair[1] %}
+  {% endif %}
 {% endfor %}
 
-
-{% comment %}Remove the last comma to clean up the arrays{% endcomment %}
-{% assign keys_array = keys_array | split: "," %}
-{% assign values_array = values_array | split: "," %}
-
-<p>{{ keys_array }}</p>
-<p>{{ values_array }}</p>
+<p>{{ row_length }}</p>
+<p>{{ display_oos }}</p>
+<p>{{ show_hero }}</p>
+<p>{{ product_handles }}</p>
 
 Page URL without request host: {{ pageUrl }}
 {% for queryString in pageUrl %}
