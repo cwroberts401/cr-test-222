@@ -45,6 +45,7 @@
   {% if hide_oos == "true" %}
     <p>HIDE OOS</p>
   {% endif %}
+  <div class="product-grid-container">
   <div class="collection page-width">
     <ul id="product-grid" class="grid product-grid grid--{{ row_length }}-col-tablet-down grid--{{ row_length }}-col-desktop">
     {% for prod in product_handles %}
@@ -60,4 +61,5 @@
       {% endif %}
     {% endfor %}
     </ul>
+  </div>
   </div>
