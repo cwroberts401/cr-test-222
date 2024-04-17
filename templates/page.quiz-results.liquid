@@ -25,9 +25,8 @@ Full URL:  {{ pageUrlWithHost }}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
     {% assign prods = paramVal | split:"," %}
-
     {% for prod in prods %}
-        <p>{{ paramVal }}</p> <br>
+        <p>{{ prods }}</p> <br>
         {% assign prodObj = all_products[prods[forloop.index0]] %}
         {% render 'card-product', card_product: prodObj %}
     {% endfor %}
