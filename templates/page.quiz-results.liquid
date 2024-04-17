@@ -12,7 +12,7 @@
    url_decode | split:"\u0026"
 -%}
 {% comment  %} we can assume keys and values are at same index so we crete 2 arrays {% endcomment %}
-{% assign queryKeys= pageUrl | split"=" | first %}
+{%- assign queryKeys= pageUrl | split:"=" | first -%}
 {{ queryKeys }}
 
 Page URL without request host: {{ pageUrl }}
