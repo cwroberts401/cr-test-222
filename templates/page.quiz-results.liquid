@@ -13,7 +13,7 @@
 -%}
 {% comment %} we can assume keys and values are at same index so we crete 2 arrays {% endcomment %}
 {% assign row_length = "" %}
-{% assign display_oos = "" %}
+{% assign hide_oos = "" %}
 {% assign show_hero = "" %}
 {% assign product_handles = "" %}
 
@@ -22,8 +22,8 @@
   {% assign key_value_pair = item | split: "=" %}
   {% if key_value_pair[0] == "row_length" %}
     {% assign row_length = key_value_pair[1] %}
-  {% elsif key_value_pair[0] == "display_oos" %}
-    {% assign display_oos = key_value_pair[1] %}
+  {% elsif key_value_pair[0] == "hide_oos" %}
+    {% assign hide_oos = key_value_pair[1] %}
   {% elsif key_value_pair[0] == "show_hero" %}
     {% assign show_hero = key_value_pair[1] %}
   {% elsif key_value_pair[0] == "product_handles" %}
@@ -32,7 +32,7 @@
 {% endfor %}
 
 <p>row length: {{ row_length }}</p>
-<p>disply oos: {{ display_oos }}</p>
+<p>disply oos: {{ hide_oos }}</p>
 <p>show hero: {{ show_hero }}</p>
 <p>products: {{ product_handles }}</p>
 
