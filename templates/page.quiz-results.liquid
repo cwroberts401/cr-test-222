@@ -20,5 +20,5 @@ Full URL:  {{ pageUrlWithHost }}
 {% for param in params %}
   {% assign paramKey = param | split:"=" | first %}
   {% assign paramVal = param | split:"=" | slice: 1 %}
-  {{ paramKey }}:{{ paramVal }}
+  <p>{{ paramKey }}:{{ paramVal }}</p><br>
 {% endfor %}
