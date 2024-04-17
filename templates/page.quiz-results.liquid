@@ -9,7 +9,7 @@
 {%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
 
 {%- assign pageUrl= contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last | split:'?' | last |
-   url_decode
+   url_decode | split:"\u0026"
 -%}
 
 Page URL without request host: {{ pageUrl }}
