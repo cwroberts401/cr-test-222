@@ -27,7 +27,7 @@ Full URL:  {{ pageUrlWithHost }}
   {% elsif paramKey == "show_hero" and paramVal.first == "true" %}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
-    {% assign prods = paramVal | split:", " %}
+    {% assign prods = paramVal | split:"," %}
     {% for prod in prods %}
         <p>{{ prods }}</p> <br>
         <ul
