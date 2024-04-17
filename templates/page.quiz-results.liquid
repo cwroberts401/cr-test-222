@@ -26,6 +26,7 @@ Full URL:  {{ pageUrlWithHost }}
   {% elsif paramKey == "product_handles" and paramVal %}
     <p>{{ paramVal }}</p>
     {% assign prods = paramVal | split:"," %}
+    {{ prods | json }}
     <p>{{ prods }}</p>
     {% for prod in prods %}
   - {{ prod }}
