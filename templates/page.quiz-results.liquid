@@ -20,13 +20,16 @@ Full URL:  {{ pageUrlWithHost }}
   {% assign paramKey = param | split:"=" | first %}
   {% assign paramVal = param | split:"=" | slice: 1 %}
   <p>{{ paramKey }}:{{ paramVal }}</p><br>
-  {% if paramKey == hide_oos and paramVal %}
+  {% if paramKey == "hide_oos" and paramVal.first == "true" %}
     <p>hide oos</p>
-  {% endif %}
-  {% if paramKey == row_length and paramVal %}
+  {% elsif paramKey == "row_length" and paramVal.first == "true" %}
     <p>row length {{ paramVal }}</p>
-  {% endif %}
-  {% if paramKey == "show_hero" and paramVal.first == "true" %}
+  {% elsif paramKey == "show_hero" and paramVal.first == "true" %}
     <p>show hero</p>
+  {% elsif paramKey == "product_handles" and paramVal %}
+    {% for prod in paramVal %}
+      <p>prod</p>
+    {% endfor %}
   {% endif %}
 {% endfor %}
+{{ request.product_handles }}
