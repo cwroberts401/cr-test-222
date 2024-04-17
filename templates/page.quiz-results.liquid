@@ -8,13 +8,14 @@
 {%- comment -%} Capture the content from header {%- endcomment -%}
 {%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
 
-{%- assign pageUrlWithoutHost= contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last | split:'?' | last |
-   replace:'\/','/' | 
-   replace:'%20',' ' | 
-   replace:'\u0026','&'
+{%- assign pageUrl= contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last | split:'?' | last |
+   url_decode
 -%}
 
-Page URL without request host: {{ pageUrlWithoutHost }}
+Page URL without request host: {{ pageUrl }}
+{% for queryString in pageUrl %}
+  
+{% endfor %}
 {% for param in params %}
   {% assign paramKey = param | split:"=" | first %}
   {% assign paramVal = param | split:"=" | slice: 1 %}
