@@ -35,11 +35,7 @@
 <p>disply oos: {{ hide_oos }}</p>
 <p>show hero: {{ show_hero }}</p>
 <p>products: {{ product_handles }}</p>
-
-Page URL without request host: {{ pageUrl }}
-{% for queryString in pageUrl %}
   
-{% endfor %}
 {% for param in params %}
   {% assign paramKey = param | split:"=" | first %}
   {% assign paramVal = param | split:"=" | slice: 1 %}
@@ -52,7 +48,7 @@ Page URL without request host: {{ pageUrl }}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
     {% assign prods = paramVal.first | split: "," %}
-    <ul id="product-grid" class="grid product-grid grid--3-col-tablet-down grid--3-col-desktop">
+    <ul id="product-grid" class="grid product-grid grid--{{ row_length }}-col-tablet-down grid--{{ row_length }}-col-desktop">
     {% for prod in prods %}
         {% assign prodObj = all_products[prods[forloop.index0]] %}
       <li class="grid__item">
