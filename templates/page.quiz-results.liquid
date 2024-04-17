@@ -15,10 +15,18 @@
    replace:'\u0026','&'
 -%}
 {%- assign params = pageUrlWithHost | split:"?" | last | split:"&" -%}
-{{ params.last }}
 Full URL:  {{ pageUrlWithHost }}
 {% for param in params %}
   {% assign paramKey = param | split:"=" | first %}
   {% assign paramVal = param | split:"=" | slice: 1 %}
   <p>{{ paramKey }}:{{ paramVal }}</p><br>
+  {% if paramKey == hide_oos and paramVal %}
+    <p>hide oos</p>
+  {% endif %}
+  {% if paramKey == row_length and paramVal %}
+    <p>row length {{ paramVal }}</p>
+  {% endif %}
+  {% if paramKey == show_hero and paramVal %}
+    <p>show hero</p>
+  {% endif %}
 {% endfor %}
