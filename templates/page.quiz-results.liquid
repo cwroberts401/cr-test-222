@@ -1,9 +1,6 @@
 <script>
-  const url = window.location;
-  console.log(url.search)
   
 </script>
-{%- comment -%} Capture the content for header containing the tracking data {%- endcomment -%}
 
 {%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
 
@@ -28,9 +25,10 @@ Full URL:  {{ pageUrlWithHost }}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
     {% assign prods = paramVal | split:"," %}
+
     {% for prod in prods %}
         <p>{{ prod }}</p> <br>
-        {% assign prodObj = all_products['product_1'] %}
+        {% assign prodObj = all_products[prod[forloop.index0]] %}
         {% render 'card-product', card_product: prodObj %}
     {% endfor %}
   {% endif %}
