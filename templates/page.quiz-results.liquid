@@ -25,7 +25,7 @@ Full URL:  {{ pageUrlWithHost }}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
     <p>{{ paramVal }}</p>
-    {% assign prods = paramVal.first | split "," %}
+    {% assign prods = paramVal.first | split: "," %}
     <p>{{ prods }}</p>
     {% for prod in prods %}
         <p>{{ prods }}</p> <br>
