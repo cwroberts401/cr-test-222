@@ -18,6 +18,11 @@
 {% assign row_length = request.params['row_length'] | default: 3 %}
 
 <section class="products-grid">
+<div>Product Handles: {{ product_handles }}</div>
+<div>Show Hero: {{ show_hero }}</div>
+<div>Hide Out of Stock: {{ hide_oos }}</div>
+<div>Row Length: {{ row_length }}</div>
+
 {% for handle in product_handles %}
     {% assign product = all_products[handle] %}
     {% if product and product.available or hide_oos != 'true' %}
