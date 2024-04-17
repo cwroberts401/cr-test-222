@@ -27,7 +27,7 @@
   {% elsif key_value_pair[0] == "show_hero" %}
     {% assign show_hero = key_value_pair[1] %}
   {% elsif key_value_pair[0] == "product_handles" %}
-    {% assign product_handles = key_value_pair[1] %}
+    {% assign product_handles = key_value_pair[1] | split: "," %}
   {% endif %}
 {% endfor %}
 
