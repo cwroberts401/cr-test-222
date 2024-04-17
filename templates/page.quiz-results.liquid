@@ -27,7 +27,8 @@ Full URL:  {{ pageUrlWithHost }}
   {% elsif paramKey == "show_hero" and paramVal.first == "true" %}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
-    {% for prod in paramVal %}
+    {% assign prods = paramVal | split:", " %}
+    {% for prod in prods %}
         <ul
               id="product-grid"
               class="
@@ -35,7 +36,7 @@ Full URL:  {{ pageUrlWithHost }}
                 grid--3-col-desktop
               "
             >
-        <p>{{ prod }}</p> <br>
+        <p>{ prod }</p> <br>
         {% render 'card-product', card_product: {{ prod }} %}
       </ul>    
     {% endfor %}
