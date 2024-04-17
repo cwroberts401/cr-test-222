@@ -14,6 +14,8 @@
    replace:'%20',' ' | 
    replace:'\u0026','&'
 -%}
+{%- assign params = pageUrlWithHost | split:"?" -%}
+{{ params }}
 Full URL:  {{ pageUrlWithHost }}
 <br>
 {{ request }}
