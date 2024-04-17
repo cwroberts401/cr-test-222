@@ -8,7 +8,7 @@
 {%- comment -%} Capture the content from header {%- endcomment -%}
 {%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
 
-{%- assign pageUrlWithoutHost= contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last |
+{%- assign pageUrlWithoutHost= contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last | split:'?' | last
    replace:'\/','/' | 
    replace:'%20',' ' | 
    replace:'\u0026','&'
