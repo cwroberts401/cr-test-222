@@ -22,13 +22,21 @@ Full URL:  {{ pageUrlWithHost }}
   <p>{{ paramKey }}:{{ paramVal }}</p><br>
   {% if paramKey == "hide_oos" and paramVal.first == "true" %}
     <p>hide oos</p>
-  {% elsif paramKey == "row_length" and paramVal.first == "true" %}
+  {% elsif paramKey == "row_length" and paramVal.first %}
     <p>row length {{ paramVal }}</p>
   {% elsif paramKey == "show_hero" and paramVal.first == "true" %}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
     {% for prod in paramVal %}
-      {% render 'card-product', card_product: product %}
+        <ul
+              id="product-grid"
+              class="
+                grid product-grid grid--2-col-tablet-down
+                grid--3-col-desktop
+              "
+            >
+        {% render 'card-product', card_product: product %}
+      </ul>    
     {% endfor %}
   {% endif %}
 {% endfor %}
