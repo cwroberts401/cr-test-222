@@ -1,3 +1,8 @@
+<script>
+  const url = window.location;
+  console.log(url)
+  
+</script>
 {%- comment -%} Capture the content for header containing the tracking data {%- endcomment -%}
 
 {%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
@@ -12,3 +17,4 @@
 Full URL:  {{ pageUrlWithHost }}
 <br>
 {{ request }}
+<div>{url}</div>
