@@ -29,7 +29,7 @@ Full URL:  {{ pageUrlWithHost }}
   {% elsif paramKey == "product_handles" and paramVal %}
     {% assign prods = paramVal | split:"," %}
     {% for prod in prods %}
-        <p>{{ prods }}</p> <br>
+        <p>{{ prod }}</p> <br>
         <ul
               id="product-grid"
               class="
