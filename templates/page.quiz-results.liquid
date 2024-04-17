@@ -38,7 +38,7 @@ Full URL:  {{ pageUrlWithHost }}
               "
             >
         
-        {% render 'card-product', card_product: {{ prod }} %}
+        {% render 'card-product', card_product: {{ all_products[prod].handle }} %}
       </ul>    
     {% endfor %}
   {% endif %}
