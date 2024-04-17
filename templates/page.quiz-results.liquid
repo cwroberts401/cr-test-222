@@ -28,7 +28,7 @@ Full URL:  {{ pageUrlWithHost }}
     <p>show hero</p>
   {% elsif paramKey == "product_handles" and paramVal %}
     {% for prod in paramVal %}
-      <p>{{ prod }}</p>
+      {% render 'card-product', card_product: product %}
     {% endfor %}
   {% endif %}
 {% endfor %}
