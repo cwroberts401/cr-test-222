@@ -17,6 +17,8 @@
 {%- assign params = pageUrlWithHost | split:"?" | last | split:"&" -%}
 {{ params.last }}
 Full URL:  {{ pageUrlWithHost }}
-<br>
-{{ request }}
-<div>{url}</div>
+{% for param in params %}
+  {% assign paramKey = param | split:"=" | first %}
+  {% assign paramVal = param | split:"=" | slice: 1 %}
+  {{ paramKey }}:{{ paramVal }}
+{% endfor %}
