@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                     <h2>${product.title}</h2>
                     <p>${product.variants[0].price}</p>
-                    ${variantsDropdown? variantsDropdown : null}
+                    ${variantsDropdown? variantsDropdown}
                     <button onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
                 `;
 
