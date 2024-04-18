@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const productHandles = urlParams.get('product_handles').split(',');
     const rowLength = parseInt(urlParams.get('row_length'), 10) || 3;
+    const hideOos = urlParams.get('hide_oos');
+
 
     const productsContainer = document.getElementById('products-container');
     const loader = document.getElementById('loader');
@@ -21,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/products/${handle}.js`)
             .then(response => response.json())
             .then(product => {
-                if (!product.available) {
+                if (!product.available && !hideOos) {
                     return; // Optionally skip out of stock products
                 }
 
