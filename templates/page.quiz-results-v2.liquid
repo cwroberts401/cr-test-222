@@ -56,11 +56,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     addAllToCartButton.addEventListener('click', function() {
-        Object.values(variantSelections).forEach(variantId => {
-            // Implement add to cart functionality or redirect as needed
-            console.log('Adding variant ID to cart:', variantId); // For debugging
+    const itemsToAdd = Object.entries(variantSelections).map(([handle, variantId]) => ({
+        id: variantId,
+        quantity: 1 // Assuming you want to add one of each selected variant
+    }));
+
+    if (itemsToAdd.length > 0) {
+        fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ items: itemsToAdd })
+        })
+        .then(response => response.json())
+        .then(cart => {
+            console.log('Items successfully added to the cart:', cart);
+            alert('All selected items have been added to your cart!');
+            // Optionally redirect to the cart page or update the cart UI
+        })
+        .catch(error => {
+            console.error('Error adding items to cart:', error);
+            alert('Failed to add items to the cart.');
         });
-    });
+    } else {
+        alert('No products selected to add to cart.');
+    }
+});
 
     // Manage fetching all products
     Promise.all(productHandles.map(handle => fetchProduct(handle)))
