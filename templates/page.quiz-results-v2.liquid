@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateVariant(variantId, productHandle) {
         const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
         const selectedVariant = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
-        console.log(selectedVariant.dataset.imageUrl[0])
+        console.log(selectedVariant.dataset.imageUrl[1])
         console.log(selectedVariant)
 
         productInfo.querySelector('.product-image').src = selectedVariant.dataset.imageUrl;
