@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const productHandles = urlParams.get('product_handles').split(',');
     const rowLength = parseInt(urlParams.get('row_length'), 10) || 3;
-    const hideOos = urlParams.get('hide_oos')
 
     const productsContainer = document.getElementById('products-container');
     const loader = document.getElementById('loader');
@@ -22,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/products/${handle}.js`)
             .then(response => response.json())
             .then(product => {
-                if (!product.available && !hideOos) {
+                if (!product.available) {
                     return; // Optionally skip out of stock products
                 }
 
@@ -35,7 +34,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 variantsDropdown += `</select>`;
 
-                productCard.innerHTML = {% render 'card-product', card_product: product %}};
+                productCard.innerHTML = `
+                    <a href="/products/${product.handle}">
+                        <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
+                    </a>
+                    <h2>${product.title}</h2>
+                    <p>${product.variants[0].price}</p>
+                    ${variantsDropdown}
+                    <button onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
+                `;
 
                 productsContainer.appendChild(productCard);
                 allVariantIds.push(product.variants[0].id); // Assume adding the first variant by default
