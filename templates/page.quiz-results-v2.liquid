@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         productInfo.querySelector('.product-image').src = selectedVariant.dataset.imageUrl;
         productInfo.querySelector('.product-image').alt = selectedVariant.dataset.title;
-        productInfo.querySelector('.price').textContent = `$${selectedVariant.dataset.price}`;
+        productInfo.querySelector('.price').textContent = `$${(selectedVariant.dataset.price/100).toFixed(2)}`;
 
         variantSelections[productHandle] = variantId; // Update the currently selected variant ID
     }
