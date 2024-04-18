@@ -35,6 +35,7 @@
     {% assign heroProduct = all_products[product_handles[0]] %}
       <div class="hero-card">
         <img src={{ heroProduct.featured_media | image_url: width: 165 }} height=200px width=200px alt="{{ heroProduct.description }}"/>
+        <h3>{{ heroProduct.title }}</h3>
       </div>
       {% render 'card-product', card_product: heroProduct, show_quick_add: true %}
     {% assign product_handles = product_handles | slice: 1, product_handles.size %}
