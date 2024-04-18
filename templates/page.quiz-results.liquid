@@ -37,13 +37,6 @@
           if (!product.available && hideOos) {
             return null; // Return null if product should be skipped
           }
-          product.variants.forEach(variant => {
-                variantSelections[handle] = {
-                    id: variant.id,
-                    available: variant.available  // Assuming 'available' is a boolean attribute
-                };
-          });
-          
           return { handle, product };
         });
     }
@@ -97,13 +90,11 @@
     });
 
     addAllToCartButton.addEventListener('click', function () {
-      const itemsToAdd = Object.entries(variantSelections)
-    .filter(([, variantDetails]) => variantDetails.available)  // Keep only available variants
-    .map(([handle, variantDetails]) => ({
-        id: variantDetails.id,
-        quantity: 1
-    }));
-      console.log(Object.entries(variantSelections))
+      const itemsToAdd = Object.entries(variantSelections).map(([handle, variantId]) => ({
+        id: variantId,
+        quantity: 1, // Assuming you want to add one of each selected variant
+
+      }));
       console.log(itemsToAdd)
 
       if (itemsToAdd.length > 0) {
