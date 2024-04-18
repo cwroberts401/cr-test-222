@@ -35,15 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateVariant(variantId, productHandle) {
     // Select the product card using the data-handle attribute
     const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
-    console.log(productInfo.querySelector(`button[data-variant-id="${variantId}"]`))
     
     // Ensure the selected variant button exists in the DOM before trying to access its data
     const selectedVariantButton = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
     if (!selectedVariantButton) {
         console.error('Selected variant button not found');
-        //return; // Exit the function if the button is not found
+        return; // Exit the function if the button is not found
     }
-
+    selectedVariantButton.className = 'active';
     // Update the image source, alt text, and price using data from the selected variant button
     const imageElement = productInfo.querySelector('.product-image');
     const priceElement = productInfo.querySelector('.price');
@@ -129,8 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let variantButtons = "<div class='variant-placeholder'></div>"
                 if (product.variants.length > 1){
                 variantButtons = product.variants.map(variant =>
-                    `<button class="${variant.id === product.variants[0].id ? 'active' : ''} variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">
-${variant.title}</button>`
+                    `<button class="${variant.id === product.variants[0].id ? 'active' : ''} variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${variant.title}</button>`
                 ).join('');
                 }
 
