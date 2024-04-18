@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let variantButtons = "<div class='variant-placeholder'></div>"
                 if (product.variants.length > 1){
                 variantButtons = product.variants.map(variant =>
+                    console.log(variant.image)
                     `<button class="variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant}">${variant.title}</button>`
                 ).join('');
                 }
