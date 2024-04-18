@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="card-info">
                     <h2 class="product-title">${product.title}</h2>
                     <p class="price">$${(product.variants[0].price/100).toFixed(2)}</p>
-                    ${product.variants.length > 1? variantButtons : '<div class='variant-placeholder'></div>'}
+                    ${product.variants.length > 1? variantButtons: "<div class='variant-placeholder'></div>"}
                     <button class="add-to-cart-btn" ${product.available? '': 'disabled'} onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
                     <div>
                 `;
@@ -151,32 +151,6 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .add-to-cart-btn:hover {
-  border: solid 2px;
-  transition-delay: 0s;
-  transition-duration: 0.1s;
-  transition-timing-function: ease;
-}
-
-.variant-btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font: inherit;
-  font-size: 1.5rem;
-  text-decoration: none;
-  color: rgb(18, 18, 18);
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: rgb(255, 255, 255);
-  padding: .8rem;
-  min-width: 33%;
-  box-sizing: border-box;
-  border: solid 1px;
-  height: 20px;
-}
-
-.variant-btn:hover {
   border: solid 2px;
   transition-delay: 0s;
   transition-duration: 0.1s;
