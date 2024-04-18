@@ -55,6 +55,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    addAllToCartButton.addEventListener('click', function() {
+        Object.values(variantSelections).forEach(variantId => {
+            // Implement add to cart functionality or redirect as needed
+            console.log('Adding variant ID to cart:', variantId); // For debugging
+        });
+    });
+
     // Manage fetching all products
     Promise.all(productHandles.map(handle => fetchProduct(handle)))
         .then(results => {
