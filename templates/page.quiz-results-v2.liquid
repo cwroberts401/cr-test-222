@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const loader = document.getElementById('loader');
     const addAllToCartButton = document.getElementById('addAllToCart');
 
+    document.querySelectorAll('.product-card').forEach(function(card) {
+        card.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
+    });
+
     let allVariantIds = []; // To store all first variant ids for the add all to cart functionality
 
     productHandles.forEach((handle, index) => {
