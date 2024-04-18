@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateVariant(variantId, productHandle) {
         const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
         const selectedVariant = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
+        console.log(selectedVariant.dataset.imageUrl)
 
         productInfo.querySelector('.product-image').src = selectedVariant.dataset.imageUrl;
         productInfo.querySelector('.product-image').alt = selectedVariant.dataset.title;
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let variantButtons = "<div class='variant-placeholder'></div>"
                 if (product.variants.length > 1){
                 variantButtons = product.variants.map(variant =>
-                    `<button class="variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.image?.src}">${variant.title}</button>`
+                    `<button class="variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.image}">${variant.title}</button>`
                 ).join('');
                 }
 
