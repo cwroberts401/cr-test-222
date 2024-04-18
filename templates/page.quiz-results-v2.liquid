@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 productCard.innerHTML = `
                     <a href="/products/${product.handle}">
                         <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
+                        ${product.available? '':'<div class="sold-out"><p>sold out</p></div>'}
                     </a>
                     <div class="card-info">
                     <h2 class="product-title">${product.title}</h2>
