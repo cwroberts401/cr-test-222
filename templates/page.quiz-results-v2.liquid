@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 const productCard = document.createElement('div');
+                productCard.setAttribute('data-handle', handle);
                 productCard.className = 'product-card';
                 productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
