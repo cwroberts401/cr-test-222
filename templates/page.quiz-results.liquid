@@ -183,7 +183,12 @@
                 `;
 
           container.appendChild(productCard);
-          variantSelections[product.handle] = product.variants[0].id; // Assume adding the first variant by default
+          // When initially fetching and setting the default variant
+variantSelections[product.handle] = {
+    id: product.variants[0].id,
+    available: product.variants[0].available  // Assuming 'available' is a boolean property of variants
+};
+ // Assume adding the first variant by default
         });
 
         loader.style.display = 'none';
