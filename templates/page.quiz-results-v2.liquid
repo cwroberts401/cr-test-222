@@ -1,12 +1,11 @@
-<!-- Quiz Results and Product Loading Containers -->
-<h1>Your Quiz Results</h1>
-<div id="loader" class="loader">{% render 'loading-spinner', class: 'run' %}</div>
+<!-- Loader and Products Container -->
+<h1> Your Quiz Results </h1>
+<div id="loader" class="loader">{% render 'loading-spinner', class: 'run'%}</div>
 <div id="hero-container" class="hero-container"></div>
 <div id="products-container" class="product-grid"></div>
 
-<!-- Button to Add All Items to Cart -->
-<button class="add-to-cart-btn" style="display: none; min-width: 50%; margin: 10px auto 100px; background-color: black; color: white;" id="addAllToCart">Add All to Cart</button>
-
+<!-- Add All to Cart Button -->
+<button class="add-to-cart-btn" style="display: none; min-width: 50%; margin: 10px auto 100px; background-color: black; color: white;" id="addAllToCart" style="margin: 20px; display: none;">Add All to Cart</button>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -19,109 +18,155 @@ document.addEventListener('DOMContentLoaded', function() {
     const heroContainer = document.getElementById('hero-container');
     const loader = document.getElementById('loader');
     const addAllToCartButton = document.getElementById('addAllToCart');
+
     let variantSelections = {};
 
-    function updateVariant(variantId, productHandle) {
-        const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
-        const selectedVariantButton = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
-        if (!selectedVariantButton) {
-            console.error('Selected variant button not found');
-            return;
-        }
+    // Function to fetch product data
+    function fetchProduct(handle) {
+        return fetch(`/products/${handle}.js`)
+            .then(response => response.json())
+            .then(product => {
+                if (!product.available && hideOos) {
+                    return null; // Return null if product should be skipped
+                }
+                return { handle, product };
+            });
+    }
+  function updateVariant(variantId, productHandle) {
+    // Select the product card using the data-handle attribute
+    const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
+    
+    // Ensure the selected variant button exists in the DOM before trying to access its data
+    const selectedVariantButton = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
+    if (!selectedVariantButton) {
+        console.error('Selected variant button not found');
+        return; // Exit the function if the button is not found
+    }
+    const allVariantButtons = productInfo.querySelectorAll(`button`)
+    console.log(allVariantButtons)
+    allVariantButtons.forEach(button => { button.className = 'variant-btn' });
+    selectedVariantButton.className += ' active';
+    // Update the image source, alt text, and price using data from the selected variant button
+    const imageElement = productInfo.querySelector('.product-image');
+    const priceElement = productInfo.querySelector('.price');
+    
+    imageElement.src = selectedVariantButton.dataset.imageUrl;
+    imageElement.alt = selectedVariantButton.dataset.title;
+    priceElement.textContent = `$${(parseInt(selectedVariantButton.dataset.price, 10) / 100).toFixed(2)}`;
 
-        // Clear existing active classes and set the selected button as active
-        productInfo.querySelectorAll('button').forEach(button => button.classList.remove('active'));
-        selectedVariantButton.classList.add('active');
+    // Update the `product-var-id` attribute of the product card
+    productInfo.setAttribute('data-product-var-id', variantId);
 
-        // Update product details based on selected variant
-        const imageElement = productInfo.querySelector('.product-image');
-        const priceElement = productInfo.querySelector('.price');
-        imageElement.src = selectedVariantButton.dataset.imageUrl;
-        imageElement.alt = selectedVariantButton.dataset.title;
-        priceElement.textContent = `$${(parseInt(selectedVariantButton.dataset.price, 10) / 100).toFixed(2)}`;
+    // Also update the hidden input field's value to reflect the new variant ID
+    const hiddenInputField = productInfo.querySelector('input[name="id"]');
+    if (hiddenInputField) {
+        hiddenInputField.value = variantId;
+    } else {
+        console.error('No hidden input field found for variant ID');
+    }
 
-        productInfo.setAttribute('data-product-var-id', variantId);
-        const hiddenInputField = productInfo.querySelector('input[name="id"]');
-        if (hiddenInputField) hiddenInputField.value = variantId;
-
+    // Update the variant selections object, if used elsewhere in your application
+    if (variantSelections) {
         variantSelections[productHandle] = variantId;
     }
+}
+
 
     productsContainer.addEventListener('click', function(event) {
         if (event.target.matches('.variant-btn')) {
-            const btn = event.target;
-            updateVariant(btn.dataset.variantId, btn.dataset.handle);
+            const variantId = event.target.dataset.variantId;
+            const productHandle = event.target.dataset.handle;
+            updateVariant(variantId, productHandle);
         }
     });
+
 
     addAllToCartButton.addEventListener('click', function() {
-        const itemsToAdd = Object.entries(variantSelections).map(([handle, variantId]) => ({
-            id: variantId,
-            quantity: 1
-        }));
-        if (itemsToAdd.length > 0) {
-            fetch('/cart/add.js', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ items: itemsToAdd })
-            })
-            .then(response => response.json())
-            .then(cart => {
-                window.location.href = '/cart';
-            })
-            .catch(error => {
-                console.error('Error adding items to cart:', error);
-                alert('Failed to add items to the cart.');
-            });
-        } else {
-            alert('No products selected to add to cart.');
-        }
-    });
+    const itemsToAdd = Object.entries(variantSelections).map(([handle, variantId]) => ({
+        id: variantId,
+        quantity: 1 // Assuming you want to add one of each selected variant
+    }));
 
+    if (itemsToAdd.length > 0) {
+        fetch('/cart/add.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ items: itemsToAdd })
+        })
+        .then(response => response.json())
+        .then(cart => {
+            console.log('Items successfully added to the cart:', cart);
+            window.location.href = '/cart'; // Redirect to the cart page
+        })
+        .catch(error => {
+            console.error('Error adding items to cart:', error);
+            alert('Failed to add items to the cart.');
+        });
+    } else {
+        alert('No products selected to add to cart.');
+    }
+});
+
+
+    // Manage fetching all products
     Promise.all(productHandles.map(handle => fetchProduct(handle)))
         .then(results => {
             results.forEach(result => {
-                if (!result) return;
+                if (!result) return; // Skip rendering if null
                 const { handle, product } = result;
+                
                 const container = showHero && handle === productHandles[0] ? heroContainer : productsContainer;
-                if (showHero && handle === productHandles[0]) showHero = false;
+                if (showHero && handle === productHandles[0]) {
+                    showHero = false; // Ensure hero is only used once
+                }
 
                 const productCard = document.createElement('div');
-                productCard.className = 'product-card';
                 productCard.setAttribute('data-handle', handle);
+                productCard.setAttribute('product-var-id', product.variants[0].id );
+                productCard.className = 'product-card'; 
                 productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
-                const variantButtons = product.variants.length > 1 ? product.variants.map(variant => 
+                let variantButtons = "<div class='variant-placeholder'></div>"
+                if (product.variants.length > 1){
+                variantButtons = product.variants.map(variant =>
                     `<button class="${variant.id === product.variants[0].id ? 'active' : ''} variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${variant.title}</button>`
-                ).join('') : "<div class='variant-placeholder'></div>";
+                ).join('');
+                }
+
 
                 productCard.innerHTML = `
                     <a href="/products/${product.handle}">
-                        ${product.available ? '' : '<div class="sold-out"><p>sold out</p></div>'}
+                        ${product.available? '':'<div class="sold-out"><p>sold out</p></div>'}
                         <img class="product-image" src="${product.images[0]}" alt="${product.title}" style="width: 100%;">                        
                     </a>
                     <div class="card-info">
-                        <h2 class="product-title">${product.title}</h2>
-                        <p class="price">$${(product.variants[0].price / 100).toFixed(2)}</p>
-                        <div class="var-container">${variantButtons}</div>
-                        <form method="post" action="/cart/add">
-                            <input name="id" value="${product.variants[0].id}" type="hidden" />
-                            <input class="${product.available ? '' : 'disabled'} add-to-cart-btn" name="add" value="Add To Cart" type="submit" />
-                        </form>
+                    <h2 class="product-title">${product.title}</h2>
+                    <p class="price">$${(product.variants[0].price/100).toFixed(2)}</p>
+                    <div class="var-container">
+                      ${variantButtons}
                     </div>
+                    <form method="post" action="/cart/add">
+                    <input name="id" value="${ product.variants[0].id }" type="hidden" />
+                    <input class="${product.available?'':'disabled'} add-to-cart-btn" name="add" value="add To Cart" type="submit" />
+                    </form>
+                    <div>
                 `;
+
                 container.appendChild(productCard);
-                variantSelections[handle] = product.variants[0].id;
+                variantSelections[product.handle] = product.variants[0].id; // Assume adding the first variant by default
             });
+
             loader.style.display = 'none';
-            addAllToCartButton.style.display = 'block';
+            addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
         })
         .catch(error => {
             console.error('Error loading products:', error);
         });
 });
-</script>
 
+</script>
 
 
 <style>
