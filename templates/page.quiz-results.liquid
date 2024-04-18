@@ -45,6 +45,11 @@
   {% if hide_oos == "true" %}
     <p>HIDE OOS</p>
   {% endif %}
+  {% if show_hero == "true" %}
+    {% assign heroProduct = all_products[product_handles[0]] %}
+      {% render 'card-product', card_product: heroProduct, show_quick_add: true %}
+    {% assign product_handles = product_handles | slice: 1 %}
+  {% endif %}
   <div class="product-grid-container">
   <div class="collection page-width">
     <ul id="product-grid" class="grid product-grid grid--{{ row_length }}-col-tablet-down grid--{{ row_length }}-col-desktop">
