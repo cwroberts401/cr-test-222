@@ -37,6 +37,11 @@
           if (!product.available && hideOos) {
             return null; // Return null if product should be skipped
           }
+          product.variants.forEach(variant => {
+            // Initially set all variants as they are fetched
+            variantSelections[handle] = { id: variant.id, available: variant.available };
+          });
+          
           return { handle, product };
         });
     }
@@ -75,10 +80,10 @@
         console.error('No hidden input field found for variant ID');
       }
 
-      // Update the variant selections object, if used elsewhere in your application
-      if (variantSelections) {
-        variantSelections[productHandle] = variantId;
-      }
+      variantSelections[productHandle] = {
+        id: variantId,
+        available: available
+      };
     }
 
     productsContainer.addEventListener('click', function (event) {
@@ -90,11 +95,12 @@
     });
 
     addAllToCartButton.addEventListener('click', function () {
-      const itemsToAdd = Object.entries(variantSelections).map(([handle, variantId]) => ({
-        id: variantId,
-        quantity: 1, // Assuming you want to add one of each selected variant
-
-      }));
+      const itemsToAdd = Object.values(variantSelections)
+        .filter(variant => variant.available)  // Only include items that are available
+        .map(variant => ({
+            id: variant.id,
+            quantity: 1  // Assuming you want to add one of each selected variant
+        }));
       console.log(itemsToAdd)
 
       if (itemsToAdd.length > 0) {
