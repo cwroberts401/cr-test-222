@@ -141,6 +141,13 @@ document.addEventListener('DOMContentLoaded', function() {
   transition-timing-function: ease;
 }
 
+button:disabled,
+button[disabled]{
+  cursor: initial;
+  color: rgba(18, 18, 18, 0.6);
+}
+
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
