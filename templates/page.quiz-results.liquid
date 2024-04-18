@@ -17,7 +17,7 @@
 {% assign show_hero = "" %}
 {% assign product_handles = "" %}
 
-{% comment %}Loop through each item, split by '=', and add to respective arrays{% endcomment %}
+{% comment %}Loop through each item, split by '=', and add to respective variables{% endcomment %}
 {% for item in pageUrl %}
   {% assign key_value_pair = item | split: "=" %}
   {% if key_value_pair[0] == "row_length" %}
@@ -56,7 +56,7 @@
       </li>
       {% elsif hide_oos == "false" %}
       <li class="grid__item">
-        {% render 'card-product', card_product: prodObj %}
+        {% render 'card-product', card_product: prodObj, show_quick_add: true %}
       </li>
       {% endif %}
     {% endfor %}
