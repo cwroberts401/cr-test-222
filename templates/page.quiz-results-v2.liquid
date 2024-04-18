@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
 
                 container.appendChild(productCard);
-                allVariantIds.push(product.variants[0].id); // Assume adding the first variant by default
+                variantSelections[product.handle] = product.variants[0].id; // Assume adding the first variant by default
             });
 
             loader.style.display = 'none';
