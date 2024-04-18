@@ -71,8 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 productCard.className = 'product-card';
                 productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
+                let variantButtons = "<div class='variant-placeholder'></div>"
                 if (product.variants.length > 1){
-                  let variantButtons = product.variants.map(variant =>
+                let variantButtons = product.variants.map(variant =>
                     `<button class="variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${product.images[0]}">${variant.title}</button>`
                 ).join('');
                 }
@@ -86,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="card-info">
                     <h2 class="product-title">${product.title}</h2>
                     <p class="price">$${(product.variants[0].price/100).toFixed(2)}</p>
-                    ${product.variants.length > 1? variantButtons: "<div class='variant-placeholder'></div>"}
+                    ${variantButtons}
                     <form method="post" action="/cart/add">
                     <input name="id" value="${ product.variants[0].id }" type="hidden" />
                     <input class="add-to-cart-btn" name="add" value="add To Cart" type="submit" />
