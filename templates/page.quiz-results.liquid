@@ -94,6 +94,7 @@
         id: variantId,
         quantity: 1, // Assuming you want to add one of each selected variant
       }));
+      console.log(itemsToAdd)
 
       if (itemsToAdd.length > 0) {
         fetch('/cart/add.js', {
