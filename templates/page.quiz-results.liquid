@@ -82,7 +82,7 @@
 
       variantSelections[productHandle] = {
         id: variantId,
-        available: available
+        available: selectedVariantButton.dataset.avail
       };
     }
 
@@ -151,7 +151,7 @@
                     variant.id === product.variants[0].id ? 'active' : ''
                   } variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${
                     variant.title
-                  }" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${
+                  }" data-price="${variant.price}" data-avail="${variant.available}" data-image-url="${variant.featured_image.src}">${
                     variant.title
                   }</button>`
               )
