@@ -59,10 +59,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     <a href="/products/${product.handle}">
                         <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
                     </a>
+                    <div class="card-info">
                     <h2 class="product-title">${product.title}</h2>
                     <p>${product.variants[0].price}</p>
                     ${variantsDropdown}
                     <button class="add-to-cart-btn" ${product.available? '': 'disabled'} onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
+                    <div>
                 `;
 
                 container.appendChild(productCard);
@@ -104,6 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
     display: flex;
     flex-wrap: wrap;
     margin-top: 20px;
+}
+.card-info {
+  padding: 17px 0;
 }
 .product-card {
     margin: 10px;
