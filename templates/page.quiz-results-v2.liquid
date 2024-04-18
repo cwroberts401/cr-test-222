@@ -20,29 +20,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let allVariantIds = []; // To store all first variant ids for the add all to cart functionality
 
-    // Load hero product if enabled
-    if (showHero && productHandles.length > 0) {
-        const heroHandle = productHandles.shift(); // Remove the first handle for the hero product
-        fetchProduct(heroHandle, true); // Fetch and render the hero product separately
-    }
-
-    // Fetch and render all other products
-    productHandles.forEach(handle => fetchProduct(handle, false));
-
-    function fetchProduct(handle, isHero) {
-        fetch(`/products/${handle}.js`)
+    // Function to fetch product data
+    function fetchProduct(handle) {
+        return fetch(`/products/${handle}.js`)
             .then(response => response.json())
             .then(product => {
                 if (!product.available && hideOos) {
-                    return; // Optionally skip out of stock products
+                    return null; // Return null if product should be skipped
+                }
+                return { handle, product };
+            });
+    }
+
+    // Manage fetching all products
+    Promise.all(productHandles.map(handle => fetchProduct(handle)))
+        .then(results => {
+            results.forEach(result => {
+                if (!result) return; // Skip rendering if null
+                const { handle, product } = result;
+                
+                const container = showHero && handle === productHandles[0] ? heroContainer : productsContainer;
+                if (showHero && handle === productHandles[0]) {
+                    showHero = false; // Ensure hero is only used once
                 }
 
-                const container = isHero ? heroContainer : productsContainer;
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                if (!isHero) {
-                    productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
-                }
+                productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
                 let variantsDropdown = product.variants.length > 1 ? `<select>` : '';
                 product.variants.forEach(variant => {
@@ -62,17 +66,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 container.appendChild(productCard);
                 allVariantIds.push(product.variants[0].id); // Assume adding the first variant by default
-
-                if (!isHero && productHandles.indexOf(handle) === productHandles.length - 1) {
-                    loader.style.display = 'none';
-                    addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
-                }
-            })
-            .catch(error => {
-                console.error('Error loading product:', handle, error);
             });
-    }
+
+            loader.style.display = 'none';
+            addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
+        })
+        .catch(error => {
+            console.error('Error loading products:', error);
+        });
 });
+
 </script>
 
 
