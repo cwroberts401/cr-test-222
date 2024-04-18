@@ -1,0 +1,68 @@
+<script>
+  
+</script>
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%} Capture the content from header {%- endcomment -%}
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+
+{%- assign pageUrl= contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last | split:'?' | last |
+   url_decode | split:"\u0026"
+-%}
+{% comment %} we can assume keys and values are at same index so we crete 2 arrays {% endcomment %}
+{% assign row_length = "" %}
+{% assign hide_oos = "" %}
+{% assign show_hero = "" %}
+{% assign product_handles = "" %}
+
+{% comment %}Loop through each item, split by '=', and add to respective variables{% endcomment %}
+{% for item in pageUrl %}
+  {% assign key_value_pair = item | split: "=" %}
+  {% if key_value_pair[0] == "row_length" %}
+    {% assign row_length = key_value_pair[1] %}
+  {% elsif key_value_pair[0] == "hide_oos" %}
+    {% assign hide_oos = key_value_pair[1] %}
+  {% elsif key_value_pair[0] == "show_hero" %}
+    {% assign show_hero = key_value_pair[1] %}
+  {% elsif key_value_pair[0] == "product_handles" %}
+    {% assign product_handles = key_value_pair[1] | split: "," %}
+  {% endif %}
+{% endfor %}
+  <h2 class="quiz-results-title"> Quiz Results </h2>
+  {% if show_hero == "true" %}
+    {% assign heroProduct = all_products[product_handles[0]] %}
+      <div class="hero-card">
+        <h3>Your Top Choice!!</h3>
+      {% render 'card-product', card_product: heroProduct, show_quick_add: true %}
+      </div>
+    {% assign product_handles = product_handles | slice: 1, product_handles.size %}
+  {% endif %}
+  <div class="product-grid-container">
+  <div class="collection page-width">
+    <ul id="product-grid" class="grid product-grid contains-card contains-card--product contains-card--standard grid--{{ row_length }}-col-desktop grid--2-col-tablet-down">
+    {% for prod in product_handles %}
+        {% assign prodObj = all_products[prod] %}
+      {% if hide_oos == "true" and prodObj.available %}
+      <li class="grid__item">
+        {% render 'card-product', card_product: prodObj, show_quick_add: true %}
+      </li>
+      {% elsif hide_oos == "false" %}
+      <li class="grid__item">
+        {% render 'card-product', card_product: prodObj, show_quick_add: true %}
+      </li>
+      {% endif %}
+    {% endfor %}
+    </ul>
+  </div>
+  </div>
+
+  <style>
+    .quiz-results-title{
+      text-align: center;
+    }
+    .hero-card{
+      margin: 0 5vw;
+    }
+  </style>
