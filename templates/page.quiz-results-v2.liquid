@@ -47,6 +47,14 @@ document.addEventListener('DOMContentLoaded', function() {
         variantSelections[productHandle] = variantId; // Update the currently selected variant ID
     }
 
+    productsContainer.addEventListener('click', function(event) {
+        if (event.target.matches('.variant-btn')) {
+            const variantId = event.target.dataset.variantId;
+            const productHandle = event.target.dataset.handle;
+            updateVariant(variantId, productHandle);
+        }
+    });
+
     // Manage fetching all products
     Promise.all(productHandles.map(handle => fetchProduct(handle)))
         .then(results => {
