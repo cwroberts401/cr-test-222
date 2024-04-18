@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let variantButtons = "<div class='variant-placeholder'></div>"
                 if (product.variants.length > 1){
                 variantButtons = product.variants.map(variant =>
-                    `<button class="${variant.id === product.variants[0].id? "active": ""} variant-btn data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${variant.title}</button>`
+                    `<button class="${variant.id === product.variants[0].id? "active disabled": ""} variant-btn data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${variant.title}</button>`
                 ).join('');
                 }
 
@@ -169,6 +169,9 @@ document.addEventListener('DOMContentLoaded', function() {
 <style>
   .active {
     opacity: 0.5;
+  }
+  .active: hover {
+    
   }
   h1 {
     text-align: center;
