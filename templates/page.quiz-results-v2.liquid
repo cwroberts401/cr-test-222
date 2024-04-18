@@ -5,15 +5,13 @@
 
 <!-- Add All to Cart Button -->
 <button id="addAllToCart" style="margin: 20px; display: none;">Add All to Cart</button>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const productHandles = urlParams.get('product_handles').split(',');
     const rowLength = parseInt(urlParams.get('row_length'), 10) || 3;
-    const hideOos = urlParams.get('hide_oos');
-    let showHero = urlParams.get('show_hero');
-
+    const hideOos = urlParams.get('hide_oos') === "true";
+    let showHero = urlParams.get('show_hero') === "true";
 
     const productsContainer = document.getElementById('products-container');
     const heroContainer = document.getElementById('hero-container');
@@ -22,40 +20,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let allVariantIds = []; // To store all first variant ids for the add all to cart functionality
 
-    productHandles.forEach((handle, index) => {
+    // Load hero product if enabled
+    if (showHero && productHandles.length > 0) {
+        const heroHandle = productHandles.shift(); // Remove the first handle for the hero product
+        fetchProduct(heroHandle, true); // Fetch and render the hero product separately
+    }
+
+    // Fetch and render all other products
+    productHandles.forEach(handle => fetchProduct(handle, false));
+
+    function fetchProduct(handle, isHero) {
         fetch(`/products/${handle}.js`)
             .then(response => response.json())
             .then(product => {
-                if (!product.available && hideOos === "true") {
+                if (!product.available && hideOos) {
                     return; // Optionally skip out of stock products
                 }
 
-                if (showHero === "true"){
-                  const heroCard = document.createElement('div');
-                  heroCard.innerHTML = 
-                    `<p>hero here</p>
-                    <a href="/products/${product.handle}">
-                        <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
-                    </a>
-                    `
-                  showHero = false;
-                  heroContainer.appendChild(heroCard);
-                  return
-                }
-
+                const container = isHero ? heroContainer : productsContainer;
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`
-
-                let variantsDropdown = false
-                if (product.variants.length > 1){
-                  variantsDropdown = `<select>`;
-                    product.variants.forEach(variant => {
-                    variantsDropdown += `<option value="${variant.id}">${variant.title}</option>`;
-                  });
-                  variantsDropdown += `</select>`;
+                if (!isHero) {
+                    productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
                 }
 
+                let variantsDropdown = product.variants.length > 1 ? `<select>` : '';
+                product.variants.forEach(variant => {
+                    variantsDropdown += `<option value="${variant.id}">${variant.title}</option>`;
+                });
+                variantsDropdown += product.variants.length > 1 ? `</select>` : '';
 
                 productCard.innerHTML = `
                     <a href="/products/${product.handle}">
@@ -63,14 +56,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                     <h2>${product.title}</h2>
                     <p>${product.variants[0].price}</p>
-                    ${variantsDropdown? variantsDropdown:""}
+                    ${variantsDropdown}
                     <button onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
                 `;
 
-                productsContainer.appendChild(productCard);
+                container.appendChild(productCard);
                 allVariantIds.push(product.variants[0].id); // Assume adding the first variant by default
 
-                if (index === productHandles.length - 1) {
+                if (!isHero && productHandles.indexOf(handle) === productHandles.length - 1) {
                     loader.style.display = 'none';
                     addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
                 }
@@ -78,41 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error loading product:', handle, error);
             });
-    });
-
-    addAllToCartButton.addEventListener('click', function() {
-        allVariantIds.forEach(id => {
-            fetch('/cart/add.js', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    items: allVariantIds.map(id => ({ id: id, quantity: 1 }))
-                })
-            })
-            .then(response => response.json())
-            .then(data => console.log('All items added', data))
-            .catch(error => console.error('Error adding items to cart:', error));
-        });
-    });
+    }
 });
-
-function addToCart(variantId) {
-    fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: variantId,
-            quantity: 1
-        })
-    })
-    .then(response => response.json())
-    .then(data => alert('Added to cart!'))
-    .catch(error => console.error('Error adding item to cart:', error));
-}
 </script>
 
 
