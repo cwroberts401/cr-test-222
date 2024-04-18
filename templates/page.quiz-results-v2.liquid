@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/products/${handle}.js`)
             .then(response => response.json())
             .then(product => {
-                if (displayOos === true) {
+                if (displayOos === "true") {
                     return; // Optionally skip out of stock products
                 }
 
