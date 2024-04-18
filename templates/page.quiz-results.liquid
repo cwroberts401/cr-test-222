@@ -98,11 +98,12 @@
 
     addAllToCartButton.addEventListener('click', function () {
       const itemsToAdd = Object.entries(variantSelections)
-      .filter(([, variantDetails]) => variantDetails.available)  // Keep only available variants
-      .map(([handle, variantDetails]) => ({
+    .filter(([, variantDetails]) => variantDetails.available)  // Keep only available variants
+    .map(([handle, variantDetails]) => ({
         id: variantDetails.id,
         quantity: 1
-      }));
+    }));
+      console.log(Object.entries(variantSelections))
       console.log(itemsToAdd)
 
       if (itemsToAdd.length > 0) {
