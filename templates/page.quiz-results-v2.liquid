@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/products/${handle}.js`)
             .then(response => response.json())
             .then(product => {
-                if (!product.available && !hideOos) {
+                if (!product.available && hideOos === "false") {
                     return; // Optionally skip out of stock products
                 }
 
