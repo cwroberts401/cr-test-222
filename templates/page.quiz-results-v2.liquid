@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="add-to-cart-btn" ${product.available? '': 'disabled'} onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
                     <form method="post" action="/cart/add">
                     <p>${ product.variants[0].id }</p>
-                    <input name="id" value="${ product.variants.id }" type="hidden" />
+                    <input name="id" value="${ product.variants[0].id }" type="hidden" />
                     <input name="add" value="ORDER NOW" type="submit" />
                     </form>
                     <div>
