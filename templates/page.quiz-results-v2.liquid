@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productHandles = urlParams.get('product_handles').split(',');
     const rowLength = parseInt(urlParams.get('row_length'), 10) || 3;
     const displayOos = urlParams.get('hide_oos')
+    console.log(displayOos)
 
     const productsContainer = document.getElementById('products-container');
     const loader = document.getElementById('loader');
