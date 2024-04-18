@@ -36,16 +36,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 return { handle, product };
             });
     }
-    function updateVariant(variantId, productHandle) {
-        const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
-        const selectedVariant = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
-
-        productInfo.querySelector('.product-image').src = selectedVariant.dataset.imageUrl;
-        productInfo.querySelector('.product-image').alt = selectedVariant.dataset.title;
-        productInfo.querySelector('.price').textContent = `$${(selectedVariant.dataset.price/100).toFixed(2)}`;
-
-        variantSelections[productHandle] = variantId; // Update the currently selected variant ID
+  function updateVariant(variantId, productHandle) {
+    // Select the product card using the data-handle attribute
+    const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
+    
+    // Ensure the selected variant button exists in the DOM before trying to access its data
+    const selectedVariantButton = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
+    if (!selectedVariantButton) {
+        console.error('Selected variant button not found');
+        return; // Exit the function if the button is not found
     }
+
+    // Update the image source, alt text, and price using data from the selected variant button
+    const imageElement = productInfo.querySelector('.product-image');
+    const priceElement = productInfo.querySelector('.price');
+    
+    imageElement.src = selectedVariantButton.dataset.imageUrl;
+    imageElement.alt = selectedVariantButton.dataset.title;
+    priceElement.textContent = `$${(parseInt(selectedVariantButton.dataset.price, 10) / 100).toFixed(2)}`;
+
+    // Update the `product-var-id` attribute of the product card
+    productInfo.setAttribute('data-product-var-id', variantId);
+
+    // Also update the hidden input field's value to reflect the new variant ID
+    const hiddenInputField = productInfo.querySelector('input[name="id"]');
+    if (hiddenInputField) {
+        hiddenInputField.value = variantId;
+    } else {
+        console.error('No hidden input field found for variant ID');
+    }
+
+    // Update the variant selections object, if used elsewhere in your application
+    if (variantSelections) {
+        variantSelections[productHandle] = variantId;
+    }
+}
+
 
     productsContainer.addEventListener('click', function(event) {
         if (event.target.matches('.variant-btn')) {
@@ -99,7 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const productCard = document.createElement('div');
                 productCard.setAttribute('data-handle', handle);
-                productCard.className = 'product-card';
+                productCard.setAttribute('product-var-id', product.variants[0].id );
+                productCard.className = 'product-card'; 
                 productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
                 let variantButtons = "<div class='variant-placeholder'></div>"
