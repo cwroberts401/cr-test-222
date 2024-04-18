@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let variantButtons = "<div class='variant-placeholder'></div>"
                 if (product.variants.length > 1){
                 variantButtons = product.variants.map(variant =>
-                    `<button class="variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${variant.title}</button>`
+                    `<button class="variant-btn ${variant.id === product.variant[0].id? "active": ""} data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${variant.title}</button>`
                 ).join('');
                 }
 
@@ -167,6 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <style>
+  .active {
+    background-color: gray;
+  }
   h1 {
     text-align: center;
     margin: 20px 0 10px 0;
