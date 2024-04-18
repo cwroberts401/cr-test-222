@@ -23,79 +23,74 @@ document.addEventListener('DOMContentLoaded', function() {
     const loader = document.getElementById('loader');
     const addAllToCartButton = document.getElementById('addAllToCart');
 
-    let variantSelections = {}; // Stores current variant IDs for each product
+    let allVariantIds = []; // To store all first variant ids for the add all to cart functionality
 
-    function formatPrice(priceInCents) {
-        return (priceInCents / 100).toFixed(2);
+    // Function to fetch product data
+    function fetchProduct(handle) {
+        return fetch(`/products/${handle}.js`)
+            .then(response => response.json())
+            .then(product => {
+                if (!product.available && hideOos) {
+                    return null; // Return null if product should be skipped
+                }
+                return { handle, product };
+            });
+    }
+    function updateVariant(variantId, productHandle, variantTitle, variantPrice, imageUrl) {
+    const productInfo = document.querySelector(`a[href="/products/${productHandle}"]`).parentNode;
+    productInfo.querySelector('.product-image').src = imageUrl;
+    productInfo.querySelector('.product-image').alt = variantTitle;
+    productInfo.querySelector('.product-price').textContent = `$${formatPrice(variantPrice)}`;
     }
 
-    function updateVariant(variantId, productHandle) {
-        const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
-        const selectedVariant = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
-
-        productInfo.querySelector('.product-image').src = selectedVariant.dataset.imageUrl;
-        productInfo.querySelector('.product-image').alt = selectedVariant.dataset.title;
-        productInfo.querySelector('.price').textContent = `$${formatPrice(selectedVariant.dataset.price)}`;
-
-        variantSelections[productHandle] = variantId; // Update the currently selected variant ID
-    }
-
-    productsContainer.addEventListener('click', function(event) {
-        if (event.target.matches('.variant-btn')) {
-            const variantId = event.target.dataset.variantId;
-            const productHandle = event.target.dataset.handle;
-            updateVariant(variantId, productHandle);
-        }
-    });
-
-    addAllToCartButton.addEventListener('click', function() {
-        Object.values(variantSelections).forEach(variantId => {
-            // Implement add to cart functionality or redirect as needed
-            console.log('Adding variant ID to cart:', variantId); // For debugging
-        });
-    });
-
+    // Manage fetching all products
     Promise.all(productHandles.map(handle => fetchProduct(handle)))
         .then(results => {
             results.forEach(result => {
-                if (!result) return;
+                if (!result) return; // Skip rendering if null
                 const { handle, product } = result;
-
-                // Initially set the first variant as selected
-                variantSelections[handle] = product.variants[0].id;
-
+                
                 const container = showHero && handle === productHandles[0] ? heroContainer : productsContainer;
+                if (showHero && handle === productHandles[0]) {
+                    showHero = false; // Ensure hero is only used once
+                }
+
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.setAttribute('data-handle', handle);
                 productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
                 let variantButtons = product.variants.map(variant =>
-                    `<button class="variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${product.images[0]}">${variant.title}</button>`
+                    `<button class="variant-btn" onclick="updateVariant('${variant.id}', '${product.handle}', '${variant.title}', '${variant.price}', '${product.images[0]}')">${variant.title}</button>`
                 ).join('');
 
                 productCard.innerHTML = `
-                    <a href="/products/${handle}">
-                        ${product.available ? '' : '<div class="sold-out">sold out</div>'}
-                        <img src="${product.images[0]}" alt="${product.title}" class="product-image">
+                    <a href="/products/${product.handle}">
+                        ${product.available? '':'<div class="sold-out"><p>sold out</p></div>'}
+                        <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">                        
                     </a>
                     <div class="card-info">
-                        <h2 class="product-title">${product.title}</h2>
-                        <p class="price">$${formatPrice(product.variants[0].price)}</p>
-                        ${variantButtons}
-                    </div>
+                    <h2 class="product-title">${product.title}</h2>
+                    <p class="price">$${(product.variants[0].price/100).toFixed(2)}</p>
+                    ${product.variants.length > 1? variantButtons: "<div class='variant-placeholder'></div>"}
+                    <form method="post" action="/cart/add">
+                    <input name="id" value="${ product.variants[0].id }" type="hidden" />
+                    <input class="add-to-cart-btn" name="add" value="add To Cart" type="submit" />
+                    </form>
+                    <div>
                 `;
 
                 container.appendChild(productCard);
+                allVariantIds.push(product.variants[0].id); // Assume adding the first variant by default
             });
 
             loader.style.display = 'none';
-            addAllToCartButton.style.display = 'block';
+            addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
         })
         .catch(error => {
             console.error('Error loading products:', error);
         });
 });
+
 </script>
 
 
