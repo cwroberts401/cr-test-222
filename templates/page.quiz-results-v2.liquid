@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
                 let variantButtons = product.variants.map(variant =>
-                    `<button class="variant-btn" onclick="updateVariant('${variant.id}', '${product.handle}', '${variant.title}', '${variant.price}', '${product.images[0]}')">${variant.title}</button>`
+                    `<button class="variant-btn" onclick="updateVariant('${variant.id}', '${product.handle}')">${variant.title}</button>`
                 ).join('');
 
                 productCard.innerHTML = `
