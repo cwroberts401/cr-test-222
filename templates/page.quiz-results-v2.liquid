@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loader = document.getElementById('loader');
     const addAllToCartButton = document.getElementById('addAllToCart');
 
-    let allVariantIds = []; // To store all first variant ids for the add all to cart functionality
+    let variantSelections = {};
 
     // Function to fetch product data
     function fetchProduct(handle) {
@@ -36,11 +36,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 return { handle, product };
             });
     }
-    function updateVariant(variantId, productHandle, variantTitle, variantPrice, imageUrl) {
-    const productInfo = document.querySelector(`a[href="/products/${productHandle}"]`).parentNode;
-    productInfo.querySelector('.product-image').src = imageUrl;
-    productInfo.querySelector('.product-image').alt = variantTitle;
-    productInfo.querySelector('.product-price').textContent = `$${formatPrice(variantPrice)}`;
+    function updateVariant(variantId, productHandle) {
+        const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
+        const selectedVariant = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
+
+        productInfo.querySelector('.product-image').src = selectedVariant.dataset.imageUrl;
+        productInfo.querySelector('.product-image').alt = selectedVariant.dataset.title;
+        productInfo.querySelector('.price').textContent = `$${selectedVariant.dataset.price}`;
+
+        variantSelections[productHandle] = variantId; // Update the currently selected variant ID
     }
 
     // Manage fetching all products
