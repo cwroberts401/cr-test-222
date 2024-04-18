@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateVariant(variantId, productHandle) {
     // Select the product card using the data-handle attribute
     const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
+    console.log(productInfo)
     
     // Ensure the selected variant button exists in the DOM before trying to access its data
     const selectedVariantButton = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
