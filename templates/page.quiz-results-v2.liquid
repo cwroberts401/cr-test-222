@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return { handle, product };
             });
     }
+    function updateVariant(variantId, productHandle, variantTitle, variantPrice, imageUrl) {
+    const productInfo = document.querySelector(`a[href="/products/${productHandle}"]`).parentNode;
+    productInfo.querySelector('.product-image').src = imageUrl;
+    productInfo.querySelector('.product-image').alt = variantTitle;
+    productInfo.querySelector('.product-price').textContent = `$${formatPrice(variantPrice)}`;
+    }
 
     // Manage fetching all products
     Promise.all(productHandles.map(handle => fetchProduct(handle)))
@@ -49,11 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 productCard.className = 'product-card';
                 productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
-                let variantsDropdown = product.variants.length > 1 ? `<select>` : '';
-                product.variants.forEach(variant => {
-                    variantsDropdown += `<option value="${variant.id}">${variant.title}</option>`;
-                });
-                variantsDropdown += product.variants.length > 1 ? `</select>` : '';
+                let variantButtons = product.variants.map(variant =>
+                    `<button onclick="updateVariant('${variant.id}', '${product.handle}', '${variant.title}', '${variant.price}', '${product.images[0]}')">${variant.title}</button>`
+                ).join('');
 
                 productCard.innerHTML = `
                     <a href="/products/${product.handle}">
