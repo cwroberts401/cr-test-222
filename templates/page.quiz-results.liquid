@@ -95,7 +95,7 @@
 
     addAllToCartButton.addEventListener('click', function () {
       const itemsToAdd = Object.values(variantSelections)
-        .filter(variant => variant.available == true)  // Only include items that are available
+        .filter(variant => variant.available === true || variant.available === "true")  // Only include items that are available
         .map(variant => ({
             id: variant.id,
             quantity: 1  // Assuming you want to add one of each selected variant
