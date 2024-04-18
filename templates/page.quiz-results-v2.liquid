@@ -6,9 +6,7 @@
 
 <!-- Add All to Cart Button -->
 <button class="add-to-cart-btn" style="display: none; min-width: 50%; margin: 10px auto 100px; background-color: black; color: white;" id="addAllToCart" style="margin: 20px; display: none;">Add All to Cart</button>
-
 <script>
-  
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const productHandles = urlParams.get('product_handles').split(',');
@@ -21,8 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loader = document.getElementById('loader');
     const addAllToCartButton = document.getElementById('addAllToCart');
 
-    // Ensure all product ids are stored for the 'Add All to Cart' functionality
-    let allVariantIds = [];
+    let allVariantIds = []; // To store all first variant ids for the add all to cart functionality
 
     // Function to fetch product data
     function fetchProduct(handle) {
@@ -35,91 +32,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 return { handle, product };
             });
     }
-
-    // Function to update the displayed variant
     function updateVariant(variantId, productHandle, variantTitle, variantPrice, imageUrl) {
-        const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
-        productInfo.querySelector('.product-image').src = imageUrl;
-        productInfo.querySelector('.product-image').alt = variantTitle;
-        productInfo.querySelector('.price').textContent = `$${(variantPrice / 100).toFixed(2)}`;
+    const productInfo = document.querySelector(`a[href="/products/${productHandle}"]`).parentNode;
+    productInfo.querySelector('.product-image').src = imageUrl;
+    productInfo.querySelector('.product-image').alt = variantTitle;
+    productInfo.querySelector('.product-price').textContent = `$${formatPrice(variantPrice)}`;
     }
 
-    // Add all to cart function
-    function addAllToCart() {
-        allVariantIds.forEach(id => {
-            addToCart(id, 1);
-        });
-    }
-
-    // Add to cart function
-    function addToCart(variantId, quantity) {
-        fetch('/cart/add.js', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: variantId,
-                quantity: quantity
-            })
-        })
-        .then(response => response.json())
-        .then(data => alert('Added to cart!'))
-        .catch(error => console.error('Error adding item to cart:', error));
-    }
-
-    // Handle all clicks for variant selection and add to cart using delegation
-    document.body.addEventListener('click', function(event) {
-        if (event.target.matches('.variant-btn')) {
-            const { variantId, handle, title, price, imageUrl } = event.target.dataset;
-            updateVariant(variantId, handle, title, price, imageUrl);
-        } else if (event.target.matches('.add-to-cart-btn')) {
-            const { variantId } = event.target.dataset;
-            addToCart(variantId, 1);
-        } else if (event.target.matches('#addAllToCart')) {
-            addAllToCart();
-        }
-    });
-
-    // Fetch all products
+    // Manage fetching all products
     Promise.all(productHandles.map(handle => fetchProduct(handle)))
         .then(results => {
             results.forEach(result => {
-                if (!result) return;
+                if (!result) return; // Skip rendering if null
                 const { handle, product } = result;
+                
                 const container = showHero && handle === productHandles[0] ? heroContainer : productsContainer;
                 if (showHero && handle === productHandles[0]) {
-                    showHero = false;
+                    showHero = false; // Ensure hero is only used once
                 }
 
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.setAttribute('data-handle', handle);
                 productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
                 let variantButtons = product.variants.map(variant =>
-                    `<button class="variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${product.images[0]}">${variant.title}</button>`
+                    `<button class="variant-btn" onclick="updateVariant('${variant.id}', '${product.handle}', '${variant.title}', '${variant.price}', '${product.images[0]}')">${variant.title}</button>`
                 ).join('');
 
                 productCard.innerHTML = `
-                    <a href="/products/${handle}">
-                        ${product.available ? '' : '<div class="sold-out"><p>sold out</p></div>'}
-                        <img src="${product.images[0]}" alt="${product.title}" class="product-image">
+                    <a href="/products/${product.handle}">
+                        ${product.available? '':'<div class="sold-out"><p>sold out</p></div>'}
+                        <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">                        
                     </a>
                     <div class="card-info">
-                        <h2 class="product-title">${product.title}</h2>
-                        <p class="price">$${(product.variants[0].price / 100).toFixed(2)}</p>
-                        ${product.variants.length > 1 ? variantButtons : "<div class='variant-placeholder'></div>"}
-                        <button class="add-to-cart-btn" data-variant-id="${product.variants[0].id}" ${product.available ? '' : 'disabled'}>Add to Cart</button>
-                    </div>
+                    <h2 class="product-title">${product.title}</h2>
+                    <p class="price">$${(product.variants[0].price/100).toFixed(2)}</p>
+                    ${product.variants.length > 1? variantButtons: "<div class='variant-placeholder'></div>"}
+                    <button class="add-to-cart-btn" ${product.available? '': 'disabled'} onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
+                    <div>
                 `;
 
                 container.appendChild(productCard);
-                allVariantIds.push(product.variants[0].id);
+                allVariantIds.push(product.variants[0].id); // Assume adding the first variant by default
             });
 
             loader.style.display = 'none';
-            addAllToCartButton.style.display = 'block';
+            addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
         })
         .catch(error => {
             console.error('Error loading products:', error);
