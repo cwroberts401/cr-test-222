@@ -55,6 +55,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    function fetchCart() {
+    fetch('/cart.js')
+        .then(response => response.json())
+        .then(cart => {
+            updateCartUI(cart);
+        })
+        .catch(error => console.error('Error fetching cart:', error));
+    }
+
+    function updateCartUI(cart) {
+    const cartItemCount = document.getElementById('cart-item-count');
+    const cartTotalPrice = document.getElementById('cart-total-price');
+    const cartItemsList = document.getElementById('cart-items-list');
+
+    // Update the total items count and total price
+    cartItemCount.textContent = cart.item_count;
+    cartTotalPrice.textContent = `$${(cart.total_price / 100).toFixed(2)}`;
+
+    // Clear current cart items list
+    cartItemsList.innerHTML = '';
+
+    // Add each cart item to the cart items list in the UI
+    cart.items.forEach(item => {
+        const itemElement = document.createElement('li');
+        itemElement.textContent = `${item.quantity} x ${item.title} - $${(item.final_price / 100).toFixed(2)}`;
+        cartItemsList.appendChild(itemElement);
+    });
+    }
+
     addAllToCartButton.addEventListener('click', function() {
     const itemsToAdd = Object.entries(variantSelections).map(([handle, variantId]) => ({
         id: variantId,
@@ -73,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(cart => {
             console.log('Items successfully added to the cart:', cart);
             alert('All selected items have been added to your cart!');
+            fetchCart(); 
             // Optionally redirect to the cart page or update the cart UI
         })
         .catch(error => {
