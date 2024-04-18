@@ -30,11 +30,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
 
-                let variantsDropdown = `<select>`;
-                product.variants.forEach(variant => {
+                if (products.variants.length > 1){
+                  let variantsDropdown = `<select>`;
+                    product.variants.forEach(variant => {
                     variantsDropdown += `<option value="${variant.id}">${variant.title}</option>`;
-                });
-                variantsDropdown += `</select>`;
+                  });
+                  variantsDropdown += `</select>`;
+                }
+
 
                 productCard.innerHTML = `
                     <a href="/products/${product.handle}">
