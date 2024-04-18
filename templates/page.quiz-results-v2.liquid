@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <form method="post" action="/cart/add">
                     <input name="id" value="${ product.variants[0].id }" type="hidden" />
-                    <input class="add-to-cart-btn" name="add" value="add To Cart" type="submit" />
+                    <input class="${product.available?'':'disabled'} add-to-cart-btn" name="add" value="add To Cart" type="submit" />
                     </form>
                     <div>
                 `;
