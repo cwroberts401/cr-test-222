@@ -34,7 +34,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 variantsDropdown += `</select>`;
 
-                productCard.innerHTML = {% render 'card-product', card_product: product %}};
+                productCard.innerHTML = `
+                    <a href="/products/${product.handle}">
+                        <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
+                    </a>
+                    <h2>${product.title}</h2>
+                    <p>${product.variants[0].price}</p>
+                    ${variantsDropdown}
+                    <button onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
+                `;
 
                 productsContainer.appendChild(productCard);
                 allVariantIds.push(product.variants[0].id); // Assume adding the first variant by default
