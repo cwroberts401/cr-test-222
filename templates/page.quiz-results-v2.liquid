@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
                     </a>
                     <h2>${product.title}</h2>
-                    <p>${product.variants[0].price | money }</p>
+                    <p>${product.variants[0].price}</p>
                     ${variantsDropdown}
                     <button onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
                 `;
