@@ -1,5 +1,6 @@
 <!-- Loader and Products Container -->
 <div id="loader" class="loader"></div>
+<div id="hero-container" class="hero-container"></div>
 <div id="products-container" class="product-grid"></div>
 
 <!-- Add All to Cart Button -->
@@ -11,15 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const productHandles = urlParams.get('product_handles').split(',');
     const rowLength = parseInt(urlParams.get('row_length'), 10) || 3;
     const hideOos = urlParams.get('hide_oos');
+    const showHero = urlParams.get('show_hero');
 
 
     const productsContainer = document.getElementById('products-container');
     const loader = document.getElementById('loader');
     const addAllToCartButton = document.getElementById('addAllToCart');
-
-    document.querySelectorAll('.product-card').forEach(function(card) {
-        card.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
-    });
 
     let allVariantIds = []; // To store all first variant ids for the add all to cart functionality
 
@@ -29,6 +27,17 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(product => {
                 if (!product.available && hideOos === "true") {
                     return; // Optionally skip out of stock products
+                }
+
+                if (showHero === "true"){
+                  const heroCard = document.createElemment('div');
+                  heroCard.innerHTML = 
+                    `<p>hero here</p>
+                    <a href="/products/${product.handle}">
+                        <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
+                    </a>
+                    `
+                  showHero = false;
                 }
 
                 const productCard = document.createElement('div');
