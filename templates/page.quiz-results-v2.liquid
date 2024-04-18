@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Selected variant button not found');
         return; // Exit the function if the button is not found
     }
-    selectedVariantButton.className = 'active';
+    selectedVariantButton.className += 'active';
     // Update the image source, alt text, and price using data from the selected variant button
     const imageElement = productInfo.querySelector('.product-image');
     const priceElement = productInfo.querySelector('.price');
