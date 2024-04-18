@@ -1,19 +1,26 @@
 <!-- Loader and Products Container -->
-<h1> Your Quiz Results </h1>
-<div id="loader" class="loader">{% render 'loading-spinner', class: 'run'%}</div>
+<h1>Your Quiz Results</h1>
+<div id="loader" class="loader">{% render 'loading-spinner', class: 'run' %}</div>
 <div id="hero-container" class="hero-container"></div>
 <div id="products-container" class="product-grid"></div>
 
 <!-- Add All to Cart Button -->
-<button class="add-to-cart-btn" style="display: none; min-width: 50%; margin: 10px auto 100px; background-color: black; color: white;" id="addAllToCart" style="margin: 20px; display: none;">Add All to Cart</button>
+<button
+  class="add-to-cart-btn"
+  style="display: none; min-width: 50%; margin: 10px auto 100px; background-color: black; color: white;"
+  id="addAllToCart"
+  style="margin: 20px; display: none;"
+>
+  Add All to Cart
+</button>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const productHandles = urlParams.get('product_handles').split(',');
     const rowLength = parseInt(urlParams.get('row_length'), 10) || 3;
-    const hideOos = urlParams.get('hide_oos') === "true";
-    let showHero = urlParams.get('show_hero') === "true";
+    const hideOos = urlParams.get('hide_oos') === 'true';
+    let showHero = urlParams.get('show_hero') === 'true';
 
     const productsContainer = document.getElementById('products-container');
     const heroContainer = document.getElementById('hero-container');
@@ -24,158 +31,167 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to fetch product data
     function fetchProduct(handle) {
-        return fetch(`/products/${handle}.js`)
-            .then(response => response.json())
-            .then(product => {
-                if (!product.available && hideOos) {
-                    return null; // Return null if product should be skipped
-                }
-                return { handle, product };
-            });
+      return fetch(`/products/${handle}.js`)
+        .then((response) => response.json())
+        .then((product) => {
+          if (!product.available && hideOos) {
+            return null; // Return null if product should be skipped
+          }
+          return { handle, product };
+        });
     }
-  function updateVariant(variantId, productHandle) {
-    // Select the product card using the data-handle attribute
-    const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
-    
-    // Ensure the selected variant button exists in the DOM before trying to access its data
-    const selectedVariantButton = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
-    if (!selectedVariantButton) {
+    function updateVariant(variantId, productHandle) {
+      // Select the product card using the data-handle attribute
+      const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
+
+      // Ensure the selected variant button exists in the DOM before trying to access its data
+      const selectedVariantButton = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
+      if (!selectedVariantButton) {
         console.error('Selected variant button not found');
         return; // Exit the function if the button is not found
-    }
-    const allVariantButtons = productInfo.querySelectorAll(`button`)
-    console.log(allVariantButtons)
-    allVariantButtons.forEach(button => { button.className = 'variant-btn' });
-    selectedVariantButton.className += ' active';
-    // Update the image source, alt text, and price using data from the selected variant button
-    const imageElement = productInfo.querySelector('.product-image');
-    const priceElement = productInfo.querySelector('.price');
-    
-    imageElement.src = selectedVariantButton.dataset.imageUrl;
-    imageElement.alt = selectedVariantButton.dataset.title;
-    priceElement.textContent = `$${(parseInt(selectedVariantButton.dataset.price, 10) / 100).toFixed(2)}`;
+      }
+      const allVariantButtons = productInfo.querySelectorAll(`button`);
+      console.log(allVariantButtons);
+      allVariantButtons.forEach((button) => {
+        button.className = 'variant-btn';
+      });
+      selectedVariantButton.className += ' active';
+      // Update the image source, alt text, and price using data from the selected variant button
+      const imageElement = productInfo.querySelector('.product-image');
+      const priceElement = productInfo.querySelector('.price');
 
-    // Update the `product-var-id` attribute of the product card
-    productInfo.setAttribute('data-product-var-id', variantId);
+      imageElement.src = selectedVariantButton.dataset.imageUrl;
+      imageElement.alt = selectedVariantButton.dataset.title;
+      priceElement.textContent = `$${(parseInt(selectedVariantButton.dataset.price, 10) / 100).toFixed(2)}`;
 
-    // Also update the hidden input field's value to reflect the new variant ID
-    const hiddenInputField = productInfo.querySelector('input[name="id"]');
-    if (hiddenInputField) {
+      // Update the `product-var-id` attribute of the product card
+      productInfo.setAttribute('data-product-var-id', variantId);
+
+      // Also update the hidden input field's value to reflect the new variant ID
+      const hiddenInputField = productInfo.querySelector('input[name="id"]');
+      if (hiddenInputField) {
         hiddenInputField.value = variantId;
-    } else {
+      } else {
         console.error('No hidden input field found for variant ID');
-    }
+      }
 
-    // Update the variant selections object, if used elsewhere in your application
-    if (variantSelections) {
+      // Update the variant selections object, if used elsewhere in your application
+      if (variantSelections) {
         variantSelections[productHandle] = variantId;
+      }
     }
-}
 
-
-    productsContainer.addEventListener('click', function(event) {
-        if (event.target.matches('.variant-btn')) {
-            const variantId = event.target.dataset.variantId;
-            const productHandle = event.target.dataset.handle;
-            updateVariant(variantId, productHandle);
-        }
+    productsContainer.addEventListener('click', function (event) {
+      if (event.target.matches('.variant-btn')) {
+        const variantId = event.target.dataset.variantId;
+        const productHandle = event.target.dataset.handle;
+        updateVariant(variantId, productHandle);
+      }
     });
 
-
-    addAllToCartButton.addEventListener('click', function() {
-    const itemsToAdd = Object.entries(variantSelections).map(([handle, variantId]) => ({
+    addAllToCartButton.addEventListener('click', function () {
+      const itemsToAdd = Object.entries(variantSelections).map(([handle, variantId]) => ({
         id: variantId,
-        quantity: 1 // Assuming you want to add one of each selected variant
-    }));
+        quantity: 1, // Assuming you want to add one of each selected variant
+      }));
 
-    if (itemsToAdd.length > 0) {
+      if (itemsToAdd.length > 0) {
         fetch('/cart/add.js', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ items: itemsToAdd })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ items: itemsToAdd }),
         })
-        .then(response => response.json())
-        .then(cart => {
+          .then((response) => response.json())
+          .then((cart) => {
             console.log('Items successfully added to the cart:', cart);
             window.location.href = '/cart'; // Redirect to the cart page
-        })
-        .catch(error => {
+          })
+          .catch((error) => {
             console.error('Error adding items to cart:', error);
             alert('Failed to add items to the cart.');
-        });
-    } else {
+          });
+      } else {
         alert('No products selected to add to cart.');
-    }
-});
-
+      }
+    });
 
     // Manage fetching all products
-    Promise.all(productHandles.map(handle => fetchProduct(handle)))
-        .then(results => {
-            results.forEach(result => {
-                if (!result) return; // Skip rendering if null
-                const { handle, product } = result;
-                
-                const container = showHero && handle === productHandles[0] ? heroContainer : productsContainer;
-                if (showHero && handle === productHandles[0]) {
-                    showHero = false; // Ensure hero is only used once
-                }
+    Promise.all(productHandles.map((handle) => fetchProduct(handle)))
+      .then((results) => {
+        results.forEach((result) => {
+          if (!result) return; // Skip rendering if null
+          const { handle, product } = result;
 
-                const productCard = document.createElement('div');
-                productCard.setAttribute('data-handle', handle);
-                productCard.setAttribute('product-var-id', product.variants[0].id );
-                productCard.className = 'product-card'; 
-                productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
+          const container = showHero && handle === productHandles[0] ? heroContainer : productsContainer;
+          if (showHero && handle === productHandles[0]) {
+            showHero = false; // Ensure hero is only used once
+          }
 
-                let variantButtons = "<div class='variant-placeholder'></div>"
-                if (product.variants.length > 1){
-                variantButtons = product.variants.map(variant =>
-                    `<button class="${variant.id === product.variants[0].id ? 'active' : ''} variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${variant.title}" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${variant.title}</button>`
-                ).join('');
-                }
+          const productCard = document.createElement('div');
+          productCard.setAttribute('data-handle', handle);
+          productCard.setAttribute('product-var-id', product.variants[0].id);
+          productCard.className = 'product-card';
+          productCard.style.flexBasis = `calc(100% / ${rowLength} - 20px)`;
 
+          let variantButtons = "<div class='variant-placeholder'></div>";
+          if (product.variants.length > 1) {
+            variantButtons = product.variants
+              .map(
+                (variant) =>
+                  `<button class="${
+                    variant.id === product.variants[0].id ? 'active' : ''
+                  } variant-btn" data-variant-id="${variant.id}" data-handle="${handle}" data-title="${
+                    variant.title
+                  }" data-price="${variant.price}" data-image-url="${variant.featured_image.src}">${
+                    variant.title
+                  }</button>`
+              )
+              .join('');
+          }
 
-                productCard.innerHTML = `
+          productCard.innerHTML = `
                     <a href="/products/${product.handle}">
-                        ${product.available? '':'<div class="sold-out"><p>sold out</p></div>'}
-                        <img class="product-image" src="${product.images[0]}" alt="${product.title}" style="width: 100%;">                        
+                        ${product.available ? '' : '<div class="sold-out"><p>sold out</p></div>'}
+                        <img class="product-image" src="${product.images[0]}" alt="${
+            product.title
+          }" style="width: 100%;">                        
                     </a>
                     <div class="card-info">
                     <h2 class="product-title">${product.title}</h2>
-                    <p class="price">$${(product.variants[0].price/100).toFixed(2)}</p>
+                    <p class="price">$${(product.variants[0].price / 100).toFixed(2)}</p>
                     <div class="var-container">
                       ${variantButtons}
                     </div>
                     <form method="post" action="/cart/add">
-                    <input name="id" value="${ product.variants[0].id }" type="hidden" />
-                    <input class="${product.available?'':'disabled'} add-to-cart-btn" name="add" value="add To Cart" type="submit" />
+                    <input name="id" value="${product.variants[0].id}" type="hidden" />
+                    <input class="${
+                      product.available ? '' : 'disabled'
+                    } add-to-cart-btn" name="add" value="add To Cart" type="submit" />
                     </form>
                     <div>
                 `;
 
-                container.appendChild(productCard);
-                variantSelections[product.handle] = product.variants[0].id; // Assume adding the first variant by default
-            });
-
-            loader.style.display = 'none';
-            addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
-        })
-        .catch(error => {
-            console.error('Error loading products:', error);
+          container.appendChild(productCard);
+          variantSelections[product.handle] = product.variants[0].id; // Assume adding the first variant by default
         });
-});
 
+        loader.style.display = 'none';
+        addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
+      })
+      .catch((error) => {
+        console.error('Error loading products:', error);
+      });
+  });
 </script>
-
 
 <style>
   .active {
     opacity: 0.5;
   }
   .active: hover {
-    
+
   }
   h1 {
     text-align: center;
@@ -192,118 +208,111 @@ document.addEventListener('DOMContentLoaded', function() {
     transform: translate(-50%, -50%);
     width: 50px;
     height: 50px;
-}
-.product-grid {
+  }
+  .product-grid {
     display: flex;
     flex-wrap: wrap;
     margin-top: 20px;
-}
-.var-container {
-  display: flex;
-  gap: 4px;
-  margin: 10px 0 5px 0;
-  justify-content: center;
-}
-.card-info {
-  padding: 17px 0;
-}
-.price {
-  margin-top: 7px;
-  font-size: 16px;
-}
-.product-card {
+  }
+  .var-container {
+    display: flex;
+    gap: 4px;
+    margin: 10px 0 5px 0;
+    justify-content: center;
+  }
+  .card-info {
+    padding: 17px 0;
+  }
+  .price {
+    margin-top: 7px;
+    font-size: 16px;
+  }
+  .product-card {
     margin: 10px;
     //flex-grow: 1;
-}
-.hero-product {
+  }
+  .hero-product {
     font-size: 24px;
     color: red;
-}
-.hero-container {
-  max-width: 75%;
-  margin: 0 auto;
-  border: solid 1px;
-  padding: 20px 40px;
-}
-.add-to-cart-btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font: inherit;
-  font-size: 1.5rem;
-  text-decoration: none;
-  color: rgb(18, 18, 18);
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: rgb(255, 255, 255);
-  padding: .8rem;
-  min-width: 100%;
-  box-sizing: border-box;
-  border: solid 1px;
-  height: 47px;
-}
-.sold-out{
-  background-color: black;
-  padding: 5px 12px;
-  position: absolute;
-  margin: 10px;
-  color: white;
-}
+  }
+  .hero-container {
+    max-width: 75%;
+    margin: 0 auto;
+    border: solid 1px;
+    padding: 20px 40px;
+  }
+  .add-to-cart-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: inherit;
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: rgb(18, 18, 18);
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: rgb(255, 255, 255);
+    padding: 0.8rem;
+    min-width: 100%;
+    box-sizing: border-box;
+    border: solid 1px;
+    height: 47px;
+  }
+  .sold-out {
+    background-color: black;
+    padding: 5px 12px;
+    position: absolute;
+    margin: 10px;
+    color: white;
+  }
 
-.add-to-cart-btn:hover {
-  border: solid 2px;
-  transition-delay: 0s;
-  transition-duration: 0.1s;
-  transition-timing-function: ease;
-}
+  .add-to-cart-btn:hover {
+    border: solid 2px;
+    transition-delay: 0s;
+    transition-duration: 0.1s;
+    transition-timing-function: ease;
+  }
 
-.variant-btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font: inherit;
-  font-size: 1.2rem;
-  text-decoration: none;
-  color: rgb(18, 18, 18);
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: rgb(255, 255, 255);
-  padding: .8rem;
-  min-width: 30%;
-  box-sizing: border-box;
-  border: solid 1px;
-  height: 25px;
-}
+  .variant-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font: inherit;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: rgb(18, 18, 18);
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: rgb(255, 255, 255);
+    padding: 0.8rem;
+    min-width: 30%;
+    box-sizing: border-box;
+    border: solid 1px;
+    height: 25px;
+  }
 
-.variant-btn:hover {
-  border: solid 2px;
-  transition-delay: 0s;
-  transition-duration: 0.1s;
-  transition-timing-function: ease;
-}
+  .variant-btn:hover {
+    border: solid 2px;
+    transition-delay: 0s;
+    transition-duration: 0.1s;
+    transition-timing-function: ease;
+  }
 
-.variant-placeholder {
-  width: 100%;
-  height: 27px;
-  display: block !important;
-}
+  .variant-placeholder {
+    width: 100%;
+    height: 27px;
+    display: block !important;
+  }
 
-.disabled{
-  cursor: initial;
-  color: rgba(18, 18, 18, 0.6);
-  border: solid 1px rgba(18, 18, 18, 0.6);
+  .disabled {
+    cursor: initial;
+    color: rgba(18, 18, 18, 0.6);
+    border: solid 1px rgba(18, 18, 18, 0.6);
+  }
 
-}
-
-.disabled:hover {
-  border: solid 1px rgba(18, 18, 18, 0.6);
-}
-
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+  .disabled:hover {
+    border: solid 1px rgba(18, 18, 18, 0.6);
+  }
 </style>
