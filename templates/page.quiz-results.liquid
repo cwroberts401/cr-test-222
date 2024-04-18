@@ -33,6 +33,9 @@
   <h2 class="quiz-results-title"> Quiz Results </h2>
   {% if show_hero == "true" %}
     {% assign heroProduct = all_products[product_handles[0]] %}
+      <div class="hero-card">
+        
+      </div>
       {% render 'card-product', card_product: heroProduct, show_quick_add: true %}
     {% assign product_handles = product_handles | slice: 1, product_handles.size %}
   {% endif %}
@@ -58,5 +61,8 @@
   <style>
     .quiz-results-title{
       text-align: center;
+    }
+    .hero-card{
+      margin: 0 5vw;
     }
   </style>
