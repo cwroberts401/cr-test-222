@@ -41,7 +41,7 @@
   {% endif %}
   <div class="product-grid-container">
   <div class="collection page-width">
-    <ul id="product-grid" class="grid product-grid contains-card contains-card--product contains-card--standard grid--{{ row_length }}-col-desktop grid--{{ row_length }}-col-tablet-down">
+    <ul id="product-grid" class="grid product-grid contains-card contains-card--product contains-card--standard grid--{{ row_length }}-col-desktop grid--2-col-tablet-down">
     {% for prod in product_handles %}
         {% assign prodObj = all_products[prod] %}
       {% if hide_oos == "true" and prodObj.available %}
