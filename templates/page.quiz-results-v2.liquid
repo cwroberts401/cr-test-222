@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <a href="/products/${product.handle}">
                         <img src="${product.images[0]}" alt="${product.title}" style="width: 100%;">
                     </a>
-                    <h2>${product.title}</h2>
+                    <h2 class="product-title">${product.title}</h2>
                     <p>${product.variants[0].price}</p>
                     ${variantsDropdown}
                     <button class="add-to-cart-btn" ${product.available? '': 'disabled'} onclick="addToCart('${product.variants[0].id}')">Add to Cart</button>
@@ -84,6 +84,9 @@ document.addEventListener('DOMContentLoaded', function() {
   h1 {
     text-align: center;
     margin: 20px 0 10px 0;
+  }
+  .product-title {
+    font-size: 13px;
   }
   .loader {
     position: fixed;
