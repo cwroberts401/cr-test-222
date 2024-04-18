@@ -101,7 +101,7 @@
             id: variant.id,
             quantity: 1  // Assuming you want to add one of each selected variant
         }));
-      console.log(Object.values(variantSelections))
+      console.log(variantSelections)
 
       if (itemsToAdd.length > 0) {
         fetch('/cart/add.js', {
