@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const productInfo = document.querySelector(`.product-card[data-handle="${productHandle}"]`);
         const selectedVariant = productInfo.querySelector(`button[data-variant-id="${variantId}"]`);
         console.log(selectedVariant.dataset.imageUrl)
+        console.log(selectedVariant)
 
         productInfo.querySelector('.product-image').src = selectedVariant.dataset.imageUrl;
         productInfo.querySelector('.product-image').alt = selectedVariant.dataset.title;
