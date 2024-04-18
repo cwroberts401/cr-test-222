@@ -6,10 +6,6 @@
 
 <!-- Add All to Cart Button -->
 <button class="add-to-cart-btn" style="display: none; min-width: 50%; margin: 10px auto 100px; background-color: black; color: white;" id="addAllToCart" style="margin: 20px; display: none;">Add All to Cart</button>
-<form method="post" action="/cart/add">
-<input name="id" value="${ product.variants[0].id }" type="hidden" />
-<input class="add-to-cart-btn" name="add" value="addToCart" type="submit" />
-</form>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
