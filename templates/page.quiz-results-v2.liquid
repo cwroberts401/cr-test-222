@@ -141,7 +141,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="card-info">
                     <h2 class="product-title">${product.title}</h2>
                     <p class="price">$${(product.variants[0].price/100).toFixed(2)}</p>
-                    ${variantButtons}
+                    <div class="var-container">
+                      ${variantButtons}
+                    </div>
                     <form method="post" action="/cart/add">
                     <input name="id" value="${ product.variants[0].id }" type="hidden" />
                     <input class="add-to-cart-btn" name="add" value="add To Cart" type="submit" />
