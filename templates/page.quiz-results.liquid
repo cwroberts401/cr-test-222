@@ -184,12 +184,11 @@
 
           container.appendChild(productCard);
           // When initially fetching and setting the default variant
-variantSelections[product.handle] = {
-    id: product.variants[0].id,
-    available: product.variants[0].available  // Assuming 'available' is a boolean property of variants
-};
- // Assume adding the first variant by default
-        });
+            variantSelections[product.handle] = {
+            id: product.variants[0].id,
+            available: product.variants[0].available
+            };
+            });
 
         loader.style.display = 'none';
         addAllToCartButton.style.display = 'block'; // Show add all to cart button once all products are loaded
